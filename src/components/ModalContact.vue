@@ -131,7 +131,7 @@ const handleSubmit = async () => {
     data.append("email", form.email);
     data.append("message", form.message);
 
-    const response = await fetch("/traitment.php", {
+    const response = await fetch("./traitment.php", {
       method: "POST",
       body: data,
     });

@@ -4,7 +4,8 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "nginx -g 'daemon off;'",
-    "healthcheckPath": "/"
+    "startCommand": "nginx -c /app/nginx.conf -g 'daemon off;'",
+    "healthcheckPath": "/",
+    "restartPolicyType": "ON_FAILURE"
   }
 }
