@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-noir-piano: #000000;
+  --color-white: #ffffff;
+  --font-display: "Oxygen", sans-serif;
+  --shadow-dock-brillant: 0 -10px 40px rgba(0,0,0,0.8);
+}
+
+/* --- VARIABLES DYNAMIQUES --- */
+:root {
+  --nav-text: #18181b; /* Noir en mode clair */
+  --nav-bg: #ffffff;
+  --line-color: #18181b;
+}
+
+.dark {
+  --nav-text: #ffffff; /* Blanc en mode sombre */
+  --nav-bg: #000000;
+  --line-color: #ffffff;
+}
+
+/* --- ADAPTATION DES CLASSES --- */
+
+.nav-text-broken {
+  @apply transition-opacity duration-300 hover:opacity-70;
+  color: var(--nav-text); /* Utilise la variable ! */
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.8rem;
+}
+
+.nav-link-top {
+  position: relative;
+  transition: all 0.3s ease;
+  /* color: red !important; */
+}
+
+.nav-link-top::after {
+  content: '';
+  position: absolute;
+  bottom: -20px; 
+  left: 50%;
+  width: 0;
+  height: 4px;
+  background: var(--line-color); /* La ligne change aussi ! */
+  transform: translateX(-50%);
+  transition: width 0.3s ease;
+}
+
+.nav-link-top.active::after, .nav-link-top:hover::after {
+  width: 100%;
+}
+
+.nav-icon-dock.active {
+  transform: translateY(-25px);
+  background: var(--nav-text); /* Inversion dynamique */
+  color: var(--nav-bg);
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  border: 2px solid var(--line-color);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Le bouton principal du Hero */
+.button {
+  @apply transition-all duration-300 flex items-center justify-center border;
+  color: var(--nav-bg);
+  background-color: var(--nav-text);
+  font-family: var(--font-display);
+  text-transform: capitalize;
+  letter-spacing: 0.15em;
+  font-size: 0.8rem;
+  height: 3rem;
+  padding: 0 2rem;
+  border-bottom-right-radius: 15px;
+}
