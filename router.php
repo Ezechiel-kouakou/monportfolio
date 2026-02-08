@@ -1,18 +1,19 @@
 <?php
 $path = ltrim($_SERVER["REQUEST_URI"], '/');
 
-// 1. SI C'EST TON FORMULAIRE (on laisse PHP l'exécuter)
-if ($path === 'traitment.php') {
-    return false; // Dit au serveur : "Exécute ce fichier normalement"
+// 1. AUTORISER L'EXÉCUTION DES FICHIERS PHP
+if ($path === 'traitment.php' || $path === 'debug.php') {
+    return false; // Permet au serveur PHP d'exécuter ces fichiers
 }
 
-// 2. SI C'EST UN FICHIER EXISTANT (JS, CSS, PDF)
+// 2. GÉRER LES FICHIERS STATIQUES DU DOSSIER DIST
 if (file_exists("dist/$path") && is_file("dist/$path")) {
     $mimes = [
         'js' => 'application/javascript', 
         'css' => 'text/css', 
         'svg' => 'image/svg+xml',
-        'pdf' => 'application/pdf'
+        'png' => 'image/png',
+        'jpg' => 'image/jpeg'
     ];
     $ext = pathinfo($path, PATHINFO_EXTENSION);
     if (isset($mimes[$ext])) {
@@ -22,6 +23,6 @@ if (file_exists("dist/$path") && is_file("dist/$path")) {
     exit;
 }
 
-// 3. PAR DÉFAUT : ON AFFICHE LE PORTFOLIO
+// 3. PAR DÉFAUT : SERVIR LE PORTFOLIO
 readfile("dist/index.html");
 ?>
