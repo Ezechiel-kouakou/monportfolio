@@ -4,10 +4,12 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // On définit le chemin de base pour WAMP (nom de ton dossier dans www)
-  // base: '/mon-portfolio/', 
+  base: './',
   plugins: [
     vue(),
     tailwindcss(),
   ],
+  build: {
+    outDir: 'dist',
+  }
 })
