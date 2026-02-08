@@ -125,7 +125,7 @@ const handleSubmit = async () => {
   loading.value = true;
   try {
  
-    const response = await fetch("./traitment.php", {
+    const response = await fetch("/traitment.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
