@@ -9,36 +9,37 @@
           class="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-zinc-200 dark:bg-zinc-800 rounded-full cursor-pointer hover:bg-zinc-400 dark:hover:bg-zinc-600 transition-colors z-10">
         </div>
 
-       <Transition name="fade">
-  <div v-if="showSuccessMessage"
-    class="absolute inset-0 z-50 flex items-center justify-center bg-white dark:bg-black transition-colors duration-500">
-    <div class="text-center p-8 scale-in">
-      <div class="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-        </svg>
-      </div>
-      
-      <h3 class="text-3xl font-bold text-zinc-900 dark:text-white mb-2 tracking-tighter">Super !</h3>
-      <p class="text-zinc-600 dark:text-zinc-400 font-medium max-w-xs mx-auto">{{ serverMessage }}</p>
+        <Transition name="fade">
+          <div v-if="showSuccessMessage"
+            class="absolute inset-0 z-50 flex items-center justify-center bg-white dark:bg-black transition-colors duration-500">
+            <div class="text-center p-8 scale-in">
+              <div class="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              
+              <h3 class="text-3xl font-bold text-zinc-900 dark:text-white mb-2 tracking-tighter">Super !</h3>
+              <p class="text-zinc-600 dark:text-zinc-400 font-medium max-w-xs mx-auto">{{ serverMessage }}</p>
 
-      <p class="flex items-center justify-center gap-2 text-zinc-400 dark:text-zinc-500 text-sm mt-6 font-medium">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock">
-          <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-        </svg>
-        Vos données sont entre de bonnes mains.
-      </p>
+              <p class="flex items-center justify-center gap-2 text-zinc-400 dark:text-zinc-500 text-sm mt-6 font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock">
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                Vos données sont entre de bonnes mains.
+              </p>
 
-      <button @click="$emit('close')"
-        class="mt-8 px-8 py-3 border border-zinc-200 dark:border-white/10 rounded-full text-sm font-bold text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors">
-        Fermer
-      </button>
-    </div>
-  </div>
-</Transition>
+              <button @click="$emit('close')"
+                class="mt-8 px-8 py-3 border border-zinc-200 dark:border-white/10 rounded-full text-sm font-bold text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors">
+                Fermer
+              </button>
+            </div>
+          </div>
+        </Transition>
+
         <div class="max-w-5xl mx-auto p-8 pt-16 h-full flex flex-col content-fade">
           <h2 class="text-4xl font-light mb-10 text-center text-black dark:text-white capitalize tracking-tighter transition-colors duration-500">
-            Parlons de votre projet<span class="text-blue-500"></span>
+            Parlons de votre projet
           </h2>
 
           <form @submit.prevent="handleSubmit" class="grid grid-cols-1 md:grid-cols-2 gap-8 overflow-y-auto pr-4 custom-scrollbar pb-10">
@@ -123,17 +124,20 @@ const form = reactive({
 const handleSubmit = async () => {
   loading.value = true;
   try {
-    const data = new FormData();
-    data.append("role", form.role);
-    data.append("entreprise", form.entreprise);
-    data.append("nom", form.lastname);
-    data.append("prenom", form.firstname);
-    data.append("email", form.email);
-    data.append("message", form.message);
-
+ 
     const response = await fetch("./traitment.php", {
       method: "POST",
-      body: data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        role: form.role,
+        entreprise: form.entreprise,
+        nom: form.lastname,
+        prenom: form.firstname,
+        email: form.email,
+        message: form.message
+      }),
     });
 
     const result = await response.json();
@@ -151,7 +155,6 @@ const handleSubmit = async () => {
         message: "",
       });
 
-      // On laisse l'utilisateur profiter du message, ou il peut cliquer sur "Fermer"
       setTimeout(() => {
         if (showSuccessMessage.value) {
           showSuccessMessage.value = false;
@@ -159,59 +162,14 @@ const handleSubmit = async () => {
         }
       }, 5000);
     } else {
-      alert("Erreur : " + result.message);
+      
+      alert("Erreur : " + (result.debug || result.message));
     }
   } catch (error) {
+    console.error("Erreur fetch:", error);
     alert("Impossible de contacter le serveur.");
   } finally {
     loading.value = false;
   }
 };
 </script>
-<style scoped>
-/* Logique de nuance pour les inputs */
-.contact-input {
-  background-color: #f4f4f5; /* Zinc-100 en clair */
-  border: 1px solid #e4e4e7; /* Zinc-200 */
-  padding: 1.25rem;
-  border-radius: 1.25rem;
-  color: #18181b;
-  font-size: 0.9rem;
-  outline: none;
-  transition: all 0.3s ease;
-}
-
-/* Version Dark des inputs */
-.dark .contact-input {
-  background-color: #0c0c0c;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-.contact-input:focus {
-  border-color: #3b82f6;
-  background-color: white;
-}
-.dark .contact-input:focus {
-  background-color: #111;
-  border-color: #3b82f6;
-}
-
-/* Custom scrollbar adaptative */
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 10px; }
-.dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; }
-
-/* Transitions existantes */
-.fade-enter-active, .fade-leave-active { transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
-.fade-enter-from, .fade-leave-to { opacity: 0; transform: translateY(20px); }
-.scale-in { animation: scaleIn 0.4s ease-out; }
-
-@keyframes scaleIn {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.slide-up-enter-active, .slide-up-leave-active { transition: transform 0.8s cubic-bezier(0.32, 0.72, 0, 1); }
-.slide-up-enter-from, .slide-up-leave-to { transform: translateY(100%); }
-</style>
