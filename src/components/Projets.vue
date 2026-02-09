@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { Users, Database, Code, ArrowUpRight, X } from "lucide-vue-next";
-import videoSPRS from "../assets/deploiement_sprs.mp4";
+const videoSPRS = "/deploiement_sprs.mp4"; 
 
 const isVideoModalOpen = ref(false);
 const currentVideo = ref("");
@@ -43,7 +43,7 @@ const topProjets = [
   {
     id: 3,
     title: "API REST ",
-    description: "Teste technique portant sur le creation d'une API REST en Node.js avec Express et typescript qui inclus authentification et limitation de débit.",
+    description: "Test technique portant sur la création d'une API REST en Node.js avec Express et typescript.",
     technos: [
       { name: "Express", icon: "https://cdn.simpleicons.org/express/000000" },
       { name: "typescript", icon: "https://cdn.simpleicons.org/typescript/3178C6" },
