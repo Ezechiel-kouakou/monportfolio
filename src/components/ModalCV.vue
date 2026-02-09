@@ -84,7 +84,6 @@ const cvPath = "/CVKOUAKOU.pdf";
   transform: scale(0.9) translateY(20px);
 }
 
-/* Scrollbar adaptative */
 ::-webkit-scrollbar {
   width: 6px;
 }

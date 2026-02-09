@@ -39,7 +39,7 @@ const topProjets = [
       { name: "VirtualBox", icon: "https://cdn.simpleicons.org/virtualbox/183A61" },
     ],
     icon: Database,
-    link: videoSPRS, // Ce lien déclenche la modal
+    link: videoSPRS, 
   },
   {
     id: 3,
