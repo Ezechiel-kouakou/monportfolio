@@ -7,8 +7,7 @@ const isVideoModalOpen = ref(false);
 const currentVideo = ref("");
 
 const handleProjectClick = (e, link) => {
-  // On vérifie si c'est une vidéo (ton fichier .mp4)
-  if (typeof link === "string" && link.endsWith(".mp4")) {
+  if (link === videoSPRS) {
     e.preventDefault();
     currentVideo.value = link;
     isVideoModalOpen.value = true;

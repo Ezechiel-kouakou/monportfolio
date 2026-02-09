@@ -5,11 +5,12 @@ if ($path === 'traitment.php' || $path === 'debug.php') {
 }
 if (file_exists("dist/$path") && is_file("dist/$path")) {
     $mimes = [
-        'js' => 'application/javascript', 
-        'css' => 'text/css', 
-        'svg' => 'image/svg+xml',
-        'png' => 'image/png',
-        'jpg' => 'image/jpeg'
+        'js'   => 'application/javascript', 
+        'css'  => 'text/css', 
+        'svg'  => 'image/svg+xml',
+        'png'  => 'image/png',
+        'mp4'  => 'video/mp4',
+        'pdf'  => 'application/pdf'
     ];
     $ext = pathinfo($path, PATHINFO_EXTENSION);
     if (isset($mimes[$ext])) {
