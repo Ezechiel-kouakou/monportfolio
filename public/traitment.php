@@ -1,65 +1,60 @@
 <?php
-/**
- * TRAITEMENT DU FORMULAIRE - VERSION DOCKER/RAILWAY
- */
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-// 1. On empêche tout texte parasite de sortir avant le JSON
+require_once __DIR__ . '/../vendor/autoload.php'; 
+
 ob_start();
-
-// 2. Headers de sécurité et CORS
-header("Access-Control-Allow-Origin: *"); 
+$allowed_origin = getenv('ALLOWED_ORIGIN') ?: '*';
+header("Access-Control-Allow-Origin: $allowed_origin");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 header('Content-Type: application/json; charset=utf-8');
 
-// 3. Inclusion de la config (PDO est déjà dedans)
-try {
-    require_once __DIR__ . '/config.php';
-} catch (Exception $e) {
-    ob_clean();
-    echo json_encode(["success" => false, "message" => "Erreur configuration serveur"]);
-    exit;
-}
+require_once __DIR__ . '/config.php';
 
-// 4. Récupération des données JSON envoyées par Vue
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
     
-    $role = nettoyer($data['role'] ?? '');
-    $entreprise = nettoyer($data['entreprise'] ?? '');
     $nom = nettoyer($data['lastname'] ?? '');
     $prenom = nettoyer($data['firstname'] ?? '');
     $email = nettoyer($data['email'] ?? '');
     $message = nettoyer($data['message'] ?? '');
 
     try {
-        // Insertion en Base de données (PostgreSQL)
-        $sql = "INSERT INTO contacts (role, entreprise, nom, prenom, email, message, date_envoi) 
-                VALUES (:role, :entreprise, :nom, :prenom, :email, :message, NOW())";
-        
+        $sql = "INSERT INTO contacts (nom, prenom, email, message, date_envoi) VALUES (?, ?, ?, ?, NOW())";
         $stmt = $pdo->prepare($sql);
-        $result = $stmt->execute([
-            ':role' => $role,
-            ':entreprise' => $entreprise,
-            ':nom' => $nom,
-            ':prenom' => $prenom,
-            ':email' => $email,
-            ':message' => $message
-        ]);
+        $stmt->execute([$nom, $prenom, $email, $message]);
 
-        // Si tout est OK
-        ob_clean(); // On vide le tampon pour être sûr d'avoir un JSON propre
-        echo json_encode(["success" => true, "message" => "Message envoyé avec succès"]);
+        $mail = new PHPMailer(true);
 
-    } catch (PDOException $e) {
+        $mail->isSMTP();
+        $mail->Host       = getenv('SMTP_HOST');
+        $mail->SMTPAuth   = true;
+        $mail->Username   = getenv('SMTP_USER');
+        $mail->Password   = getenv('SMTP_PASS'); 
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+
+        $mail->setFrom(getenv('SMTP_USER'), 'Portfolio Contact');
+        $mail->addAddress(getenv('SMTP_USER'));
+        $mail->addReplyTo($email, "$prenom $nom");
+
+        $mail->isHTML(true);
+        $mail->Subject = "Nouveau message de $prenom $nom";
+        $mail->Body    = "<h3>Nouveau message reçu</h3>
+                          <p><strong>De:</strong> $prenom $nom ($email)</p>
+                          <p><strong>Message:</strong><br>$message</p>";
+
+        $mail->send();
+
         ob_clean();
-        echo json_encode(["success" => false, "message" => "Erreur DB : " . $e->getMessage()]);
-    }
-} else {
-    ob_clean();
-    echo json_encode(["success" => false, "message" => "Requête invalide"]);
-}
-exit;
+        echo json_encode(["success" => true, "message" => "Message envoyé !"]);
 
+    } catch (Exception $e) {
+        ob_clean();
+        echo json_encode(["success" => false, "message" => "Erreur : " . $mail->ErrorInfo]);
+    }
+}
