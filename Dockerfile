@@ -22,7 +22,11 @@ COPY --from=build-stage /app/dist /var/www/html
 # On s'assure que les permissions sont bonnes
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
-# Activation du module rewrite d'Apache (important pour le routage Vue)
+# Activation du module rewrite d'Apache
 RUN a2enmod rewrite
 
+# On expose le port
 EXPOSE ${PORT}
+
+# COMMANDE DE DÉMARRAGE : Force Apache à tourner au premier plan
+CMD ["apache2-foreground"]
