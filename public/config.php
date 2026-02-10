@@ -1,45 +1,58 @@
 <?php
-session_start();
-ini_set('display_errors', 0);
-ini_set('display_startup_errors', 0);
+$is_local = ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' || $_SERVER['REMOTE_ADDR'] === '::1');
 error_reporting(E_ALL);
-if(file_exists(__DIR__.'/.env')){
-    $lines = file(__DIR__.'/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach($lines as $line){
-        if(strpos(trim($line),'#') === 0){continue;}
-        if(strpos($line,'=') !== false){
-            list($name, $value) = explode('=', $line, 2);
-            putenv(sprintf('%s=%s', trim($name), trim($value)));
-            $_ENV[trim($name)] = trim($value); 
+ini_set('display_errors', $is_local ? 1 : 0);
+
+$env_path = __DIR__ . '/../.env';
+
+if (file_exists($env_path)) {
+    $lines = file($env_path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        
+        $parts = explode('=', $line, 2);
+        if (count($parts) === 2) {
+            $name = trim($parts[0]);
+            $value = trim($parts[1]);
+            
+            putenv("$name=$value");
+            $_ENV[$name] = $value;
+            $_SERVER[$name] = $value;
         }
     }
 }
-define('DB_HOST', getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? ''));
-define('DB_PORT', getenv('DB_PORT') ?: ($_ENV['DB_PORT'] ?? '6543'));
-define('DB_USER', getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? ''));
-define('DB_PASS', getenv('DB_PASS') ?: ($_ENV['DB_PASS'] ?? ''));
-define('DB_NAME', getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? 'postgres'));
+$host   = $_ENV['DB_HOST'] ?? getenv('DB_HOST');
+$port   = $_ENV['DB_PORT'] ?? getenv('DB_PORT') ?: '6543';
+$user   = $_ENV['DB_USER'] ?? getenv('DB_USER');
+$pass   = $_ENV['DB_PASS'] ?? getenv('DB_PASS');
+$dbname = $_ENV['DB_NAME'] ?? getenv('DB_NAME');
 
+$sslmode = $is_local ? "disable" : "require";
 try {
-    $dsn = "pgsql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";sslmode=require";
+    if (!$host) {
+        throw new Exception("Fichier .env non détecté ou vide à la racine du projet.");
+    }
+
+    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;sslmode=$sslmode";
     
-    $pdo = new PDO($dsn, DB_USER, DB_PASS, [
+    $pdo = new PDO($dsn, $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::ATTR_TIMEOUT => 5 
     ]);
-} catch (PDOException $e) {
-    header('Content-Type: application/json');
-    echo json_encode([
-        "success" => false, 
-        "message" => "Erreur de connexion : " . $e->getMessage()
-    ]);
-    exit;
-}
 
+} catch (Exception $e) {
+    if ($is_local) {
+        die("ERREUR DE CONNEXION a la DB: " . $e->getMessage());
+    } else {
+        header('Content-Type: application/json');
+        echo json_encode(["success" => false, "message" => "Base de données indisponible"]);
+        exit;
+    }
+}
 if (!function_exists('nettoyer')) {
     function nettoyer($data) {
-        return htmlspecialchars(stripslashes(trim($data)), ENT_QUOTES, 'UTF-8');
+        return htmlspecialchars(stripslashes(trim($data)));
     }
 }
 ?>
