@@ -62,3 +62,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
     echo json_encode(["success" => false, "message" => "Requête invalide"]);
 }
 exit;
+

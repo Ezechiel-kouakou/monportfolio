@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 .env
-/public/debug.php
+\public\debug.php
 
 # Editor directories and files
 .vscode/*
