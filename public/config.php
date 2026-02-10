@@ -10,7 +10,7 @@ ini_set('display_errors', 1);
 
 // FrankenPHP récupère les variables via $_ENV ou getenv
 $host   = $_ENV['DB_HOST'] ?? getenv('DB_HOST');
-$port   = $_ENV['DB_PORT'] ?? getenv('DB_PORT') ?: '5432';
+$port   = $_ENV['DB_PORT'] ?? getenv('DB_PORT') ?: '6543';
 $user   = $_ENV['DB_USER'] ?? getenv('DB_USER');
 $pass   = $_ENV['DB_PASS'] ?? getenv('DB_PASS');
 $dbname = $_ENV['DB_NAME'] ?? getenv('DB_NAME');
