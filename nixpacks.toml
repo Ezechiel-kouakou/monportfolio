@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["...", "php82Packages.pdo_pgsql", "php82Packages.pgsql"]
+nixPkgs = ["php83", "php83Packages.composer", "nodejs_22", "postgresql"]
 
 [phases.build]
 cmds = ["npm install && npm run build"]
