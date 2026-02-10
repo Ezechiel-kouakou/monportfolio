@@ -9,6 +9,9 @@ RUN npm run build
 # 2. Étape de Production avec PHP + Apache
 FROM php:8.2-apache
 
+# Désactiver les MPM en conflit et forcer prefork (nécessaire pour PHP)
+RUN a2dismod mpm_event && a2enmod mpm_prefork
+
 # Installation de l'extension PostgreSQL pour PHP
 RUN apt-get update && apt-get install -y libpq-dev \
     && docker-php-ext-install pdo pdo_pgsql
@@ -19,14 +22,14 @@ RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/a
 # Copie du build de Vue.js vers le dossier Apache
 COPY --from=build-stage /app/dist /var/www/html
 
-# On s'assure que les permissions sont bonnes
+# Permissions
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
-# Activation du module rewrite d'Apache
+# Activation du module rewrite
 RUN a2enmod rewrite
 
 # On expose le port
 EXPOSE ${PORT}
 
-# COMMANDE DE DÉMARRAGE : Force Apache à tourner au premier plan
+# Commande de démarrage explicite
 CMD ["apache2-foreground"]
