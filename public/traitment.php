@@ -1,11 +1,4 @@
 <?php
-require_once __DIR__ . '/phpmailer/Exception.php';
-require_once __DIR__ . '/phpmailer/PHPMailer.php';
-require_once __DIR__ . '/phpmailer/SMTP.php';
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
 ob_start();
 
 header("Access-Control-Allow-Origin: *");
@@ -17,7 +10,7 @@ try {
     require_once __DIR__ . '/config.php';
 } catch (Exception $e) {
     ob_clean();
-    echo json_encode(["success" => false, "message" => "Erreur configuration serveur"]);
+    echo json_encode(["success" => false, "message" => "Erreur configuration"]);
     exit;
 }
 
@@ -26,65 +19,40 @@ $data = json_decode($json, true);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
     
-    $role = nettoyer($data['role'] ?? '');
-    $entreprise = nettoyer($data['entreprise'] ?? '');
     $nom = nettoyer($data['lastname'] ?? '');
     $prenom = nettoyer($data['firstname'] ?? '');
     $email = nettoyer($data['email'] ?? '');
     $message = nettoyer($data['message'] ?? '');
 
     try {
-        $sql = "INSERT INTO contacts (role, entreprise, nom, prenom, email, message, date_envoi)
-                VALUES (:role, :entreprise, :nom, :prenom, :email, :message, NOW())";
-        
+        $sql = "INSERT INTO contacts (nom, prenom, email, message, date_envoi) VALUES (?, ?, ?, ?, NOW())";
         $stmt = $pdo->prepare($sql);
-        $result = $stmt->execute([
-            ':role' => $role,
-            ':entreprise' => $entreprise,
-            ':nom' => $nom,
-            ':prenom' => $prenom,
-            ':email' => $email,
-            ':message' => $message
-        ]);
+        $result = $stmt->execute([$nom, $prenom, $email, $message]);
 
         if ($result) {
-            $mail = new PHPMailer(true);
-            try {
-                $mail->isSMTP();
-                $mail->Host       = 'ssl://smtp.gmail.com'; 
-                $mail->SMTPAuth   = true;
-                $mail->Username   = getenv('SMTP_USER'); 
-                $mail->Password   = getenv('SMTP_PASS'); 
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-                $mail->Port       = 465;
-                $mail->CharSet    = 'UTF-8';
-                $mail->Timeout    = 20;
+            $url = 'https://api.brevo.com/v3/smtp/email';
+            $apiKey = getenv('BREVO_API_KEY');
 
-                $mail->SMTPOptions = array(
-                    'ssl' => array(
-                        'verify_peer' => false,
-                        'verify_peer_name' => false,
-                        'allow_self_signed' => true
-                    )
-                );
+            $emailData = [
+                'sender' => ['name' => 'Portfolio', 'email' => 'noreply@ezechielkouakou.fr'],
+                'to' => [['email' => getenv('kouakouezechielk06@gmail.com')]],
+                'replyTo' => ['email' => $email, 'name' => "$prenom $nom"],
+                'subject' => "Nouveau message de $prenom $nom",
+                'htmlContent' => "<h3>Message de $prenom $nom ($email)</h3><p>$message</p>"
+            ];
 
-                $mail->setFrom(getenv('SMTP_USER'), 'Portfolio Contact');
-                $mail->addAddress(getenv('SMTP_USER')); 
-                $mail->addReplyTo($email, "$prenom $nom");
-                $mail->isHTML(true);
-                $mail->Subject = "Nouveau message de $prenom $nom";
-                $mail->Body    = "<b>Nom :</b> $prenom $nom <br>
-                                  <b>Entreprise :</b> $entreprise <br>
-                                  <b>Rôle :</b> $role <br>
-                                  <b>Email :</b> $email <br><br>
-                                  <b>Message :</b><br>" . nl2br($message);
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'api-key: ' . $apiKey,
+                'Content-Type: application/json',
+                'Accept: application/json'
+            ]);
 
-                $mail->send();
-            } catch (Exception $e) {
-                ob_clean();
-                echo json_encode(["success" => false, "message" => "Données sauvées, mais erreur mail : " . $mail->ErrorInfo]);
-                exit; 
-            }
+            $response = curl_exec($ch);
+            curl_close($ch);
         }
 
         ob_clean();
@@ -94,8 +62,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
         ob_clean();
         echo json_encode(["success" => false, "message" => "Erreur DB : " . $e->getMessage()]);
     }
-} else {
-    ob_clean();
-    echo json_encode(["success" => false, "message" => "Requête invalide"]);
 }
 exit;
