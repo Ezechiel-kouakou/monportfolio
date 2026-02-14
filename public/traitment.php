@@ -32,13 +32,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
         if ($result) {
             $url = 'https://api.brevo.com/v3/smtp/email';
             $apiKey = getenv('BREVO_API_KEY');
+            $monEmail = 'kouakouezechiel06@gmail.com'; 
 
             $emailData = [
-                'sender' => ['name' => 'Portfolio', 'email' => 'noreply@ezechielkouakou.fr'],
-                'to' => [['email' => getenv('kouakouezechielk06@gmail.com')]],
-                'replyTo' => ['email' => $email, 'name' => "$prenom $nom"],
+                'sender' => [
+                    'name' => 'Portfolio Contact', 
+                    'email' => $monEmail
+                ],
+                'to' => [
+                    ['email' => $monEmail]
+                ],
+                'replyTo' => [
+                    'email' => $email, 
+                    'name' => "$prenom $nom"
+                ],
                 'subject' => "Nouveau message de $prenom $nom",
-                'htmlContent' => "<h3>Message de $prenom $nom ($email)</h3><p>$message</p>"
+                'htmlContent' => "
+                    <h3>Nouveau message reçu</h3>
+                    <p><strong>De :</strong> $prenom $nom ($email)</p>
+                    <p><strong>Message :</strong></p>
+                    <p>" . nl2br($message) . "</p>
+                "
             ];
 
             $ch = curl_init($url);
