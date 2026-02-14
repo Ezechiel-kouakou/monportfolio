@@ -51,14 +51,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
             $mail = new PHPMailer(true);
             try {
                 $mail->isSMTP();
-                $mail->Host       = getenv('SMTP_HOST'); 
+                $mail->Host       = 'ssl://smtp.gmail.com'; 
                 $mail->SMTPAuth   = true;
                 $mail->Username   = getenv('SMTP_USER'); 
                 $mail->Password   = getenv('SMTP_PASS'); 
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
                 $mail->Port       = 465;
                 $mail->CharSet    = 'UTF-8';
-                $mail->Timeout    = 10; 
+                $mail->Timeout    = 20; 
                 $mail->setFrom(getenv('SMTP_USER'), 'Portfolio Contact');
                 $mail->addAddress(getenv('SMTP_USER')); 
                 $mail->addReplyTo($email, "$prenom $nom");
