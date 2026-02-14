@@ -45,8 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
             ':email' => $email,
             ':message' => $message
         ]);
-
-        // LOGIQUE PHPMAILER
         if ($result) {
             $mail = new PHPMailer(true);
             try {
@@ -73,7 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
 
                 $mail->send();
             } catch (Exception $e) {
-
+                ob_clean();
+                echo json_encode(["success" => false, "message" => "Erreur d'envoi du mail : " . $mail->ErrorInfo]);
             }
         }
 
