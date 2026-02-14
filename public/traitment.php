@@ -55,8 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
                 $mail->SMTPAuth   = true;
                 $mail->Username   = getenv('SMTP_USER'); 
                 $mail->Password   = getenv('SMTP_PASS'); 
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port       = 587;
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                $mail->Port       = 465;
                 $mail->CharSet    = 'UTF-8';
                 $mail->Timeout    = 10; 
                 $mail->setFrom(getenv('SMTP_USER'), 'Portfolio Contact');
