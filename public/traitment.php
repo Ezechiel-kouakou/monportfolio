@@ -58,7 +58,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $data) {
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
                 $mail->Port       = 465;
                 $mail->CharSet    = 'UTF-8';
-                $mail->Timeout    = 20; 
+                $mail->Timeout    = 20;
+
+                $mail->SMTPOptions = array(
+                    'ssl' => array(
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                        'allow_self_signed' => true
+                    )
+                );
+
                 $mail->setFrom(getenv('SMTP_USER'), 'Portfolio Contact');
                 $mail->addAddress(getenv('SMTP_USER')); 
                 $mail->addReplyTo($email, "$prenom $nom");
