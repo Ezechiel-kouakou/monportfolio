@@ -113,7 +113,7 @@
             </table>
           </div>
           <div class="p-6 bg-gray-50/30 border-t border-gray-100 flex flex-col items-center gap-4">
-         <a href="penguin.tailc4a1d9.ts.net" class="flex items-center gap-2 px-4 py-2 bg-[#060b24] text-white rounded-xs font-light text-sm hover:bg-opacity-90 transition-all shadow-md">   
+         <a href="https://penguin.tailc4a1d9.ts.net" class="flex items-center gap-2 px-4 py-2 bg-[#060b24] text-white rounded-xs font-light text-sm hover:bg-opacity-90 transition-all shadow-md">   
     <i class="ph ph-plus-circle text-base"></i>
     Ajouter des compétences
   </a>
@@ -243,7 +243,7 @@ const docs = ref([
 
 const fetchData = async () => {
   try {
-    const response = await fetch('http://penguin.tailc4a1d9.ts.net/api/get_data.php');
+    const response = await fetch('https://penguin.tailc4a1d9.ts.net/api/get_data.php');
     const data = await response.json();
     if (data.success) {
       profile.value = {
