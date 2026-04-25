@@ -183,6 +183,7 @@
 
     <div class="flex-1 bg-gray-100 relative">
       <iframe 
+      title="Visualisation du tableau de synthèse des compétences"
   :src="'https://view.officeapps.live.com/op/view.aspx?src=' + encodeURIComponent('https://www.ezechielkouakou.fr/docs/classeur_competences.xlsx')" 
   class="w-full h-full border-none"
   allowfullscreen>
