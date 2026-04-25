@@ -15,6 +15,17 @@ const handleProjectClick = (e, link) => {
 };
 
 const topProjets = [
+  { id: 4,
+    title: "HomeLab",
+    description: "Projet personnel de création d'un HomeLab pour expérimenter diverses technologies et configurations réseau à domicile.  ",
+    technos: [
+      { name: "Techno1", icon: "https://cdn.simpleicons.org/debian/A81D33" },
+      { name: "Techno2", icon: "https://cdn.simpleicons.org/proxmox/E57020" },
+      { name: "Techno3", icon: "https://cdn.simpleicons.org/docker/2496ED" },
+    ],
+    icon: Code,
+    link: "#",
+  },
   {
     id: 1,
     title: "SPRS | Seyrin paperless registration system",
@@ -57,10 +68,13 @@ const topProjets = [
 <template>
   <section id="projets" class="bg-zinc-50 dark:bg-[#050505] w-full px-6 py-20 md:py-32 overflow-hidden transition-colors duration-500">
     <div class="max-w-7xl mx-auto">
-      <div class="mb-12 md:mb-16 text-black dark:text-white transition-colors duration-500">
+      <div class="mb-12 md:mb-16 text-black dark:text-white transition-colors duration-500 flex flex-col md:flex-row items-center justify-between gap-6">
         <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tighter">
           Mes projets
         </h2>
+       <router-link to="/projets" class="text-sm md:text-base font-bold text-zinc-900 dark:text-white border border-zinc-200 dark:border-white/10 px-4 py-2 rounded-xl hover:bg-zinc-900 dark:hover:bg-white hover:text-white transition-all duration-300">
+          Voir tous les projets
+        </router-link>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">

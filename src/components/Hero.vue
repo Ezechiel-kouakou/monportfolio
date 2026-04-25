@@ -97,11 +97,21 @@ onMounted(() => {
         </div>
 
         <div
-          class="mt-8 md:mt-10 flex flex-wrap justify-center md:justify-start gap-4"
+          class="mt-8 md:mt-10 flex flex-wrap justify-around md:justify-start gap-4 transition-all duration-300"
         >
           <slot name="actions"></slot>
+<router-link to="/tableau-synthese" 
+  class="flex items-center gap-2 text-xs md:text-sm font-bold text-[#060b24] bg-white border border-gray-200 px-5 py-2.5 rounded-lg hover:border-[#060b24] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
+  <i class="ph ph-layout text-lg"></i>
+  <span>Tableau de synthèse</span>
+</router-link>
         </div>
       </div>
     </div>
   </section>
 </template>
+<style scoped>
+@import url("https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css");
+@import url("https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css");
+
+</style>
