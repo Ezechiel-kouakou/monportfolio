@@ -23,7 +23,6 @@ jobs:
           [ -f public/config.php ] && cp public/config.php dist/ || echo "config.php non trouvé dans public"
           [ -f public/traitement.php ] && cp public/traitement.php dist/ || echo "traitement.php non trouvé dans public"
           [ -f public/.htaccess ] && cp public/.htaccess dist/ || echo ".htaccess non trouvé dans public"
-          [ -f nginx.conf ] && cp nginx.conf dist/ || echo "nginx.conf non trouvé"
           [ -f config.php ] && cp config.php dist/ || echo "config.php non trouvé à la racine"
           [ -f traitement.php ] && cp traitement.php dist/ || echo "traitement.php non trouvé à la racine"
           [ -f .htaccess ] && cp .htaccess dist/ || echo ".htaccess non trouvé à la racine"
