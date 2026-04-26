@@ -7,6 +7,11 @@
           <div class="inline-flex items-center gap-2 px-3 py-4 bg-transparent text-[#060b24] rounded-xs  border-blue-100 text-[15px] md:text-[11px] font-light capitalize tracking-wider">
                  <i class="ph ph-stack text-[25px] text-blue-400"></i> Ezechiel Kouakou Media Hub
           </div>
+          <div class="w-16 h-1 bg-gradient-to-r from-[#060b24] to-transparent rounded-full"></div>
+          <p class="text-[11px] text-amber-800 text-center font-medium">
+        <i class="ph ph-warning-circle"></i> 
+        Note : Pour visionner les vidéos sur Google Chrome, veuillez autoriser l'accès au réseau privé ou utiliser Edge/Safari.
+      </p>
           
           <h1 class="text-3xl md:text-5xl font-black text-gray-900 leading-[1.1] tracking-tight">
             Médiathèque Technique <br>
