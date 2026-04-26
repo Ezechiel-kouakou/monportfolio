@@ -244,7 +244,7 @@ const docs = ref([
 const fetchData = async () => {
   loading.value = true;
   try {
-    const response = await fetch('https://www.ezechielkouakou.fr/api_proxy.php');
+    const response = await fetch('https://www.ezechielkouakou.fr/#/api_proxy.php');
     
     if (!response.ok) throw new Error('Erreur Proxy Azure');
 
