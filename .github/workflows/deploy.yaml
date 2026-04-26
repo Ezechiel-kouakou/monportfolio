@@ -20,9 +20,15 @@ jobs:
         run: |
           npm install
           npm run build
-          # On déplace tes fichiers PHP dans le dossier final
-          cp public/config.php dist/
-          cp public/traitement.php dist/
+          # On vérifie si les fichiers existent avant de copier pour éviter de faire planter le build
+          [ -f public/config.php ] && cp public/config.php dist/ || echo "config.php non trouvé dans public"
+          [ -f public/traitement.php ] && cp public/traitement.php dist/ || echo "traitement.php non trouvé dans public"
+          [ -f public/.htaccess ] && cp public/.htaccess dist/ || echo ".htaccess non trouvé dans public"
+
+          # Optionnel : si tes fichiers sont à la racine et non dans public
+          [ -f config.php ] && cp config.php dist/ || echo "config.php non trouvé à la racine"
+          [ -f traitement.php ] && cp traitement.php dist/ || echo "traitement.php non trouvé à la racine"
+          [ -f .htaccess ] && cp .htaccess dist/ || echo ".htaccess non trouvé à la racine"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
