@@ -1,36 +1,35 @@
 <?php
-// Désactiver l'affichage des erreurs HTML pour ne pas casser le JSON
-ini_set('display_errors', 0);
-error_reporting(E_ALL);
-
-header("Access-Control-Allow-Origin: *");
+// On autorise ton front-end
+header("Access-Control-Allow-Origin: https://www.ezechielkouakou.fr");
 header("Content-Type: application/json; charset=UTF-8");
 
+// L'URL exacte qui a fonctionné dans ton curl Azure
 $remote_url = 'https://penguin.tailc4a1d9.ts.net/api/get_data.php';
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $remote_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+// CRUCIAL : Comme c'est un réseau privé Tailscale, on ignore la vérification SSL 
+// pour éviter les erreurs de certificat auto-signé
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
 curl_setopt($ch, CURLOPT_TIMEOUT, 15);
 
 $response = curl_exec($ch);
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$curl_error = curl_error($ch);
-curl_close($ch);
 
-if ($response === false) {
+if (curl_errno($ch)) {
+    $error_msg = curl_error($ch);
     echo json_encode([
         "success" => false,
-        "message" => "Erreur cURL : " . $curl_error
-    ]);
-} else if ($http_code !== 200) {
-    echo json_encode([
-        "success" => false,
-        "message" => "Le serveur local a répondu avec le code : " . $http_code,
-        "debug_url" => $remote_url
+        "message" => "Erreur Proxy : " . $error_msg
     ]);
 } else {
+    // On renvoie la réponse du Penguin
     echo $response;
 }
+
+curl_close($ch);
