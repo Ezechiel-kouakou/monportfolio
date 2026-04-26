@@ -206,7 +206,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
-// --- AJOUT : Date dynamique du jour ---
+// --- Date dynamique ---
 const dateAujourdhui = new Date().toLocaleDateString('fr-FR', {
   day: 'numeric',
   month: 'long',
@@ -219,7 +219,6 @@ const heureActuelle = new Date().toLocaleTimeString('fr-FR', {
 });
 
 const miseAjourTotale = ref(`${dateAujourdhui} à ${heureActuelle}`);
-// --------------------------------------
 
 const skillLabelsFull = [
   "Gérer le patrimoine informatique",
@@ -232,8 +231,9 @@ const skillLabelsFull = [
 
 const profile = ref({ nom: '', candidat: '', option: 'SISR', url: '' });
 const realisations = ref([]);
+const loading = ref(false); 
+const showExcelPreview = ref(false); 
 
-// Modifié pour inclure la date dynamique dans les documents si besoin
 const docs = ref([
   { id: 1, nom: "Compétence - 01", path: "/doc/competence01", lien: "/docs/Competence01.pdf", date: dateAujourdhui },
   { id: 2, nom: "Compétence - 07", path: "/doc/competence07", lien: "/docs/architecture.pdf", date: dateAujourdhui },
@@ -241,11 +241,15 @@ const docs = ref([
   { id: 4, nom: "Compétence - 14", path: "/doc/competence14", lien: "/docs/Competence14.pdf", date: dateAujourdhui },
   { id: 5, nom: "Compétence - 17", path: "/doc/competence17", lien: "/docs/Competence17.pdf", date: dateAujourdhui }
 ]);
-
 const fetchData = async () => {
+  loading.value = true;
   try {
-    const response = await fetch('https://penguin.tailc4a1d9.ts.net/api/get_data.php');
+    const response = await fetch('./api_proxy.php');
+    
+    if (!response.ok) throw new Error('Erreur Proxy Azure');
+
     const data = await response.json();
+    
     if (data.success) {
       profile.value = {
         nom: data.profile.nom,
@@ -256,16 +260,17 @@ const fetchData = async () => {
       realisations.value = data.realisations;
     }
   } catch (e) {
-    console.error("Erreur de connexion", e);
+    console.error("Erreur de récupération via le proxy :", e);
+  } finally {
+    setTimeout(() => {
+      loading.value = false;
+    }, 500);
   }
 };
 
 const imprimerPage = () => {
   window.print();
 };
-
-const showExcelPreview = ref(false); 
-const loading = ref(false); // Ajoute cette ligne si tu veux utiliser le spinner
 
 onMounted(fetchData);
 </script>
