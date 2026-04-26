@@ -20,11 +20,11 @@ jobs:
         run: |
           npm install
           npm run build
-          # PHP pour formulaire contact
-          [ -f public/traitement.php ] && cp public/traitement.php dist/ || echo "traitement.php non trouvé"
-          [ -f public/config.php ] && cp public/config.php dist/ || echo "config.php non trouvé"
-          # .htaccess OBLIGATOIRE pour Vue Router
-          [ -f public/.htaccess ] && cp public/.htaccess dist/ || echo ".htaccess non trouvé"
+          # On copie tes fichiers PHP s'ils existent
+          [ -f public/config.php ] && cp public/config.php dist/ || true
+          [ -f public/traitement.php ] && cp public/traitement.php dist/ || true
+          [ -f config.php ] && cp config.php dist/ || true
+          [ -f traitement.php ] && cp traitement.php dist/ || true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -41,7 +41,7 @@ jobs:
         with:
           name: portfolio-dist
 
-      - name: Deploy to Azure Web App
+      - name: "Deploy to Azure Web App"
         uses: azure/webapps-deploy@v3
         with:
           app-name: "monportfolio"
