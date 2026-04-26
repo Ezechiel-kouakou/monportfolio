@@ -74,13 +74,15 @@
             <div v-if="technicalVideos.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div v-for="video in technicalVideos" :key="video.id" class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden">
                 <div class="aspect-video bg-black">
-                  <video 
+              <video 
   :key="video.nom_fichier" 
   controls 
   preload="metadata" 
   class="w-full h-full"
+  crossorigin="anonymous"
 >
   <source :src="video.nom_fichier" type="video/mp4">
+  Votre navigateur ne supporte pas la lecture de vidéos.
 </video>
                 </div>
                 <div class="p-4">
