@@ -46,9 +46,14 @@
             
             <div class="p-6">
               <div v-if="presentationVideo" class="aspect-video bg-black rounded-xs overflow-hidden border border-gray-200 shadow-inner">
-                <video :key="presentationVideo.nom_fichier" controls class="w-full h-full">
-                  <source :src="presentationVideo.nom_fichier" type="video/mp4">
-                </video>
+                <video 
+  :key="presentationVideo.nom_fichier" 
+  controls 
+  class="w-full h-full"
+  crossorigin="anonymous" 
+>
+  <source :src="presentationVideo.nom_fichier" type="video/mp4">
+</video>
               </div>
               
               <div v-else class="py-24 flex flex-col items-center text-center">
