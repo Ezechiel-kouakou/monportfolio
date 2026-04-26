@@ -130,7 +130,7 @@ const loading = ref(true);
 
 const fetchData = async () => {
   try {
-    const response = await fetch('https://penguin.tailc4a1d9.ts.net/api/get_data.php');
+    const response = await fetch('https://www.ezechielkouakou.fr/api_proxy.php');
     const data = await response.json();
     if (data.success) {
       videos.value = data.videos || [];
