@@ -20,11 +20,14 @@ jobs:
         run: |
           npm install
           npm run build
-          # On copie tes fichiers PHP s'ils existent
+          # On copie tes fichiers PHP s'ils existent dans public/
           [ -f public/config.php ] && cp public/config.php dist/ || true
           [ -f public/traitement.php ] && cp public/traitement.php dist/ || true
+          [ -f public/api_proxy.php ] && cp public/api_proxy.php dist/ || true
+
           [ -f config.php ] && cp config.php dist/ || true
           [ -f traitement.php ] && cp traitement.php dist/ || true
+          [ -f api_proxy.php ] && cp api_proxy.php dist/ || true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
