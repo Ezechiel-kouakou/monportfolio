@@ -189,7 +189,7 @@
   allowfullscreen>
 </iframe>
     </div>
-
+<!-- <img src="../../public/api_proxy.php" alt="Aperçu du tableau de synthèse au format Excel" class="w-full h-auto object-cover"> -->
     <div class="p-4 bg-gray-50 border-t border-gray-100 text-right">
       <button @click="showExcelPreview = false" class="px-6 py-2 bg-[#060b24] text-white rounded-xs font-light text-xs hover:bg-opacity-90">
         Fermer l'aperçu
@@ -244,7 +244,7 @@ const docs = ref([
 const fetchData = async () => {
   loading.value = true;
   try {
-    const response = await fetch('https://www.ezechielkouakou.fr/api_proxy.php');
+    const response = await fetch('../../public/api_proxy.php');
     
     if (!response.ok) throw new Error('Erreur Proxy Azure');
 
