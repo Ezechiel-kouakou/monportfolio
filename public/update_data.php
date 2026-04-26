@@ -1,21 +1,27 @@
 <?php
-// Désactiver l'affichage des erreurs pour ne pas polluer le JSON
 ini_set('display_errors', 0);
 
-// Le token doit être IDENTIQUE à celui de ton script .sh
-$token_secret = "ezechiel_secure_token_2024"; 
-
-if (!isset($_GET['token']) || $_GET['token'] !== $token_secret) {
-    http_response_code(403);
-    die("Accès refusé");
+function loadEnv($path) {
+    if (!file_exists($path)) return;
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        list($name, $value) = explode('=', $line, 2);
+        $_ENV[trim($name)] = trim($value);
+    }
 }
 
-// On récupère les données envoyées par le Penguin
+loadEnv(__DIR__ . '/../.env');
+
+$token_secret = $_ENV['SYNC_TOKEN'] ?? null;
+
+if (!$token_secret || !isset($_GET['token']) || $_GET['token'] !== $token_secret) {
+    http_response_code(403);
+    die("Accès refusé : Sécurité Token invalide");
+}
 $json_recu = file_get_contents('php://input');
 
 if ($json_recu) {
-    // On l'enregistre dans data_cache.json
-    // PHP créera le fichier automatiquement s'il n'existe pas
     if (file_put_contents('data_cache.json', $json_recu)) {
         echo "Synchronisation réussie !";
     } else {

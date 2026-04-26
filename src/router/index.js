@@ -4,6 +4,7 @@ import ProjectsLibraryView from '../views/ProjectsLibraryView.vue'
 import ContactView from '../views/Contact.vue'  
 import TableauSyntheseView from '../views/TableauSynthese.vue'
 import FormSyntheseView from '../views/FormSyntheseView.vue'
+import videoView from '../views/videoView.vue'
 
 // Importe tes futures pages de doc ici (ou utilise le lazy loading plus bas)
 // import ApiDoc from '../views/docs/ApiDoc.vue' 
@@ -34,7 +35,11 @@ const routes = [
     name: 'FormulaireSynthese',
     component: FormSyntheseView
   },
-
+  {
+    path: '/videos',
+    name: 'Videos',
+    component: videoView
+  },
   // --- NOUVELLES ROUTES POUR TES DOCUMENTATIONS ---
   {
     path: '/doc/competence01',
