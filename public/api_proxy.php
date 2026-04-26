@@ -1,51 +1,67 @@
 <?php
-// --- CONFIGURATION DEBUG ---
+// --- CONFIGURATION DEBUG & ERREURS ---
 ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
-$debug_info = [];
-$remote_url = 'https://penguin.tailc4a1d9.ts.net/api/get_data.php';
-
-// 1. Vérification de l'environnement Azure
-$debug_info['server_ip'] = $_SERVER['SERVER_ADDR'] ?? 'Inconnue';
-$debug_info['php_version'] = PHP_VERSION;
-
-// 2. Test de résolution DNS brute
+$debug = [];
 $host = 'penguin.tailc4a1d9.ts.net';
-$debug_info['dns_lookup'] = gethostbyname($host); 
-// Si dns_lookup == $host, c'est que le DNS ne résout rien du tout
+$ip = '100.65.154.19'; // Ton IP Tailscale Penguin
+$url = 'https://' . $host . '/api/get_data.php';
 
-// 3. Exécution cURL avec verbeux
+$debug['config'] = [
+    "target_url" => $url,
+    "forced_ip" => $ip,
+    "php_version" => PHP_VERSION
+];
+
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $remote_url);
+
+// --- LA CLÉ : FORCER LA RÉSOLUTION DNS EN INTERNE ---
+// On dit à PHP d'associer le domaine à l'IP Tailscale pour le port 443 (HTTPS)
+curl_setopt($ch, CURLOPT_RESOLVE, ["$host:443:$ip"]); 
+
+curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-curl_setopt($ch, CURLOPT_VERBOSE, true);
 curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+curl_setopt($ch, CURLOPT_VERBOSE, true);
 
-// On capture les logs verbeux dans un flux temporaire
+// Capture des logs détaillés de cURL
 $verbose = fopen('php://temp', 'w+');
 curl_setopt($ch, CURLOPT_STDERR, $verbose);
 
 $response = curl_exec($ch);
-$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$curl_error = curl_error($ch);
+$info = curl_getinfo($ch);
+$error = curl_error($ch);
 
-// Récupération des logs de debug
+// Extraction des logs de communication
 rewind($verbose);
-$debug_info['curl_verbose_logs'] = stream_get_contents($verbose);
+$debug['network_logs'] = stream_get_contents($verbose);
 fclose($verbose);
 
-$debug_info['http_code'] = $http_code;
-$debug_info['curl_error'] = $curl_error;
+$debug['http_code'] = $info['http_code'];
+$debug['curl_error'] = $error;
 
-// 4. Réponse finale
-echo json_encode([
-    "success" => false,
-    "debug" => $debug_info,
-    "raw_response_preview" => substr($response, 0, 100)
-], JSON_PRETTY_PRINT);
+// Test de connectivité brute (Port 443 sur l'IP Tailscale)
+$connection = @fsockopen($ip, 443, $errno, $errstr, 5);
+$debug['raw_tcp_check'] = [
+    "connected" => is_resource($connection),
+    "error" => $errstr
+];
+if(is_resource($connection)) fclose($connection);
+
+// --- RÉPONSE ---
+if ($response !== false && $info['http_code'] === 200) {
+    // Si ça marche, on renvoie juste les données (ou le debug si tu préfères)
+    echo $response; 
+} else {
+    echo json_encode([
+        "success" => false,
+        "message" => "Échec de la liaison avec le Penguin",
+        "debug" => $debug
+    ], JSON_PRETTY_PRINT);
+}
