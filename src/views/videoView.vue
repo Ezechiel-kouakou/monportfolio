@@ -15,8 +15,7 @@
           
           <h1 class="text-3xl md:text-5xl font-black text-gray-900 leading-[1.1] tracking-tight">
             Médiathèque Technique <br>
-            <!-- <span class="text-[#060b24]/80  font-light">Ezechiel Kouakou</span> -->
-          </h1>
+            </h1>
           
           <p class="text-sm md:text-base text-gray-500 max-w-xl leading-relaxed">
             « Créé par les étudiants, fait pour les étudiants. » <br>
@@ -50,15 +49,25 @@
             </div>
             
             <div class="p-6">
-              <div v-if="presentationVideo" class="aspect-video bg-black rounded-xs overflow-hidden border border-gray-200 shadow-inner">
-                <video 
-  :key="presentationVideo.nom_fichier" 
-  controls 
-  class="w-full h-full"
-  crossorigin="anonymous" 
->
-  <source :src="presentationVideo.nom_fichier" type="video/mp4">
-</video>
+              <div v-if="presentationVideo" class="space-y-4">
+                <div class="flex items-center gap-2">
+                  <span :class="presentationVideo.jours_restants <= 3 ? 'text-red-600 font-bold animate-pulse' : 'text-amber-700'" 
+                        class="text-[10px] flex items-center gap-1.5 bg-amber-50 px-3 py-1 rounded-full border border-amber-100 w-fit">
+                    <i class="ph-fill ph-hourglass-high"></i>
+                    Auto-suppression dans {{ presentationVideo.jours_restants }} jours
+                  </span>
+                </div>
+
+                <div class="aspect-video bg-black rounded-xs overflow-hidden border border-gray-200 shadow-inner">
+                  <video 
+                    :key="presentationVideo.nom_fichier" 
+                    controls 
+                    class="w-full h-full"
+                    crossorigin="anonymous" 
+                  >
+                    <source :src="presentationVideo.nom_fichier" type="video/mp4">
+                  </video>
+                </div>
               </div>
               
               <div v-else class="py-24 flex flex-col items-center text-center">
@@ -84,27 +93,39 @@
             <div v-if="technicalVideos.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div v-for="video in technicalVideos" :key="video.id" class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden">
                 <div class="aspect-video bg-black">
-              <video 
-  :key="video.nom_fichier" 
-  controls 
-  preload="metadata" 
-  class="w-full h-full"
-  crossorigin="anonymous"
->
-  <source :src="video.nom_fichier" type="video/mp4">
-  Votre navigateur ne supporte pas la lecture de vidéos.
-</video>
+                  <video 
+                    :key="video.nom_fichier" 
+                    controls 
+                    preload="metadata" 
+                    class="w-full h-full"
+                    crossorigin="anonymous"
+                  >
+                    <source :src="video.nom_fichier" type="video/mp4">
+                    Votre navigateur ne supporte pas la lecture de vidéos.
+                  </video>
                 </div>
                 <div class="p-4">
                   <h4 class="font-bold text-gray-900 text-xs lowercase">{{ video.titre }}</h4>
                   <p class="text-[10px] text-gray-500 mt-2 leading-relaxed italic">{{ video.description }}</p>
+                  
+                  <div class="mt-4 flex items-center justify-between border-t border-gray-50 pt-3">
+                    <p class="text-[9px] text-gray-400 uppercase tracking-wide">
+                      <i class="ph ph-calendar-blank"></i> {{ new Date(video.date_creation).toLocaleDateString('fr-FR') }}
+                    </p>
+                    
+                    <span :class="video.jours_restants <= 3 ? 'bg-red-50 text-red-700 border-red-100' : 'bg-gray-50 text-gray-600 border-gray-200'"
+                          class="text-[9px] px-2 py-0.5 rounded-xs border flex items-center gap-1 font-bold">
+                      <i :class="video.jours_restants <= 3 ? 'ph-fill ph-clock-countdown' : 'ph ph-clock'"></i>
+                      J-{{ video.jours_restants }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
             
             <div v-else class="p-12 border border-dashed border-gray-200 rounded-xs text-center opacity-40">
-               <i class="ph ph-video-slash text-4xl mb-2"></i>
-               <p class="text-[10px] font-light italic">Aucun support technique n'est disponible pour le moment.</p>
+                <i class="ph ph-video-slash text-4xl mb-2"></i>
+                <p class="text-[10px] font-light italic">Aucun support technique n'est disponible pour le moment.</p>
             </div>
           </div>
         </div>
@@ -177,5 +198,15 @@ onMounted(fetchData);
 /* On s'assure que les vidéos prennent bien toute la place sans déformer le ratio */
 video {
   object-fit: contain;
+}
+
+/* Animation pour l'alerte de suppression imminente */
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .6; }
 }
 </style>
