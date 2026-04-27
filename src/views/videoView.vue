@@ -4,35 +4,30 @@
     <div class="bg-white border-b border-gray-200 shadow-sm overflow-hidden">
       <div class="max-w-[1400px] mx-auto flex flex-col md:flex-row items-stretch">
         <div class="flex-1 px-4 md:px-8 py-16 md:py-24 space-y-6 self-center">
-          <div class="inline-flex items-center gap-2 px-3 py-4 bg-transparent text-[#060b24] rounded-xs  border-blue-100 text-[15px] md:text-[11px] font-light capitalize tracking-wider">
-                 <i class="ph ph-stack text-[25px] text-blue-400"></i> Ezechiel Kouakou Media Hub
+          <div class="inline-flex items-center gap-2 px-3 py-4 bg-transparent text-[#060b24] rounded-xs border-blue-100 text-[15px] md:text-[11px] font-light capitalize tracking-wider">
+            <i class="ph ph-stack text-[25px] text-blue-400"></i> Ezechiel Kouakou Media Hub
           </div>
           <div class="w-16 h-1 bg-gradient-to-r from-[#060b24] to-transparent rounded-full"></div>
           <p class="text-[11px] text-amber-800 text-center font-medium">
-        <i class="ph ph-warning-circle"></i> 
-        Note : Pour visionner les vidéos sur Google Chrome, veuillez autoriser l'accès au réseau privé ou utiliser Edge/Safari.
-      </p>
-          
+            <i class="ph ph-warning-circle"></i> 
+            Note : Pour visionner les vidéos sur Google Chrome, veuillez autoriser l'accès au réseau privé ou utiliser Edge/Safari.
+          </p>
           <h1 class="text-3xl md:text-5xl font-black text-gray-900 leading-[1.1] tracking-tight">
-            Médiathèque Technique <br>
-            </h1>
-          
+            Médiathèque Technique
+          </h1>
           <p class="text-sm md:text-base text-gray-500 max-w-xl leading-relaxed">
             « Créé par les étudiants, fait pour les étudiants. » <br>
             Découvrez mes démonstrations de projets et présentations professionnelles, 
             hébergées sur mon infrastructure hybride Penguin & Azure.
           </p>
-
           <div class="flex items-center gap-4 pt-2">
             <router-link to="/tableau-synthese" class="px-6 py-2.5 bg-[#060b24] text-white text-xs font-bold rounded-xs hover:bg-opacity-90 transition-all shadow-md flex items-center gap-2">
               <i class="ph ph-layout"></i> Voir les compétences
             </router-link>
           </div>
         </div>
-
         <div class="flex-1 relative min-h-[300px] md:min-h-full">
           <img src="../assets/image_host_self.jpg" alt="Illustration Mediatheque" class="absolute inset-0 w-full h-full object-cover object-center" />
-          <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent pointer-events-none md:hidden"></div>
         </div>
       </div>
     </div>
@@ -43,108 +38,91 @@
         <div class="lg:col-span-9 space-y-8">
           
           <div class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden">
-            <div class="p-5 border-b border-gray-100 bg-gray-50/50 flex items-center gap-2">
-              <i class="ph ph-identification-card text-[#060b24] text-xl"></i>
-              <h3 class="font-bold text-gray-800">Présentation Professionnelle</h3>
+            <div class="p-5 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="ph ph-identification-card text-[#060b24] text-xl"></i>
+                <h3 class="font-bold text-gray-800 uppercase text-xs tracking-widest">Présentation Professionnelle</h3>
+              </div>
             </div>
             
             <div class="p-6">
-              <div v-if="presentationVideo" class="space-y-4">
-                <div class="flex items-center gap-2">
-                  <span :class="presentationVideo.jours_restants <= 3 ? 'text-red-600 font-bold animate-pulse' : 'text-amber-700'" 
-                        class="text-[10px] flex items-center gap-1.5 bg-amber-50 px-3 py-1 rounded-full border border-amber-100 w-fit">
-                    <i class="ph-fill ph-hourglass-high"></i>
-                    Auto-suppression dans {{ presentationVideo.jours_restants }} jours
-                  </span>
-                </div>
-
+              <div v-if="presentationVideo">
                 <div class="aspect-video bg-black rounded-xs overflow-hidden border border-gray-200 shadow-inner">
-                  <video 
-                    :key="presentationVideo.nom_fichier" 
-                    controls 
-                    class="w-full h-full"
-                    crossorigin="anonymous" 
-                  >
+                  <video :key="presentationVideo.nom_fichier" controls class="w-full h-full" crossorigin="anonymous">
                     <source :src="presentationVideo.nom_fichier" type="video/mp4">
                   </video>
                 </div>
+
+                <div class="mt-6 flex flex-col md:flex-row md:items-start justify-between gap-4">
+                  <div class="flex-1">
+                    <h2 class="text-xl font-black text-gray-900 capitalize">{{ presentationVideo.titre }}</h2>
+                    <p class="text-sm text-gray-500 mt-2 leading-relaxed">{{ presentationVideo.description }}</p>
+                  </div>
+                  
+                  <div class="shrink-0">
+                    <span :class="presentationVideo.jours_restants <= 3 ? 'bg-red-50 text-red-600 border-red-100 animate-pulse' : 'bg-amber-50 text-amber-700 border-amber-100'" 
+                          class="text-[10px] flex items-center gap-1.5 px-3 py-1.5 rounded-xs border font-bold uppercase tracking-tighter">
+                      <i class="ph-fill ph-hourglass-high"></i>
+                      Expire dans {{ presentationVideo.jours_restants }} jours
+                    </span>
+                  </div>
+                </div>
               </div>
-              
+
               <div v-else class="py-24 flex flex-col items-center text-center">
-                <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 border border-gray-100">
-                  <i class="ph ph-hourglass-low text-3xl text-gray-300"></i>
-                </div>
-                <h4 class="text-gray-900 font-bold text-base">La vidéo n'a pas encore été rajoutée par son propriétaire.</h4>
-                <div class="mt-4 px-5 py-2 bg-[#f0f7ff] border border-blue-100 rounded-xs text-[#060b24] text-xs font-bold">
-                  Date d'ajout prévue : jusqu'au 30/04/2026
-                </div>
-                <p class="text-[10px] text-gray-400 mt-4 lowercase italic tracking-tight">
-                  <i class="ph ph-info"></i> merci de revenir de temps en temps visiter afin de rester informer.
-                </p>
+                <i class="ph ph-hourglass-low text-4xl text-gray-200 mb-4"></i>
+                <h4 class="text-gray-900 font-bold">Aucune vidéo de présentation.</h4>
               </div>
             </div>
           </div>
 
-          <div class="space-y-4">
-            <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
-              <i class="ph ph-code text-[#060b24]"></i> Supports Techniques
+          <div class="space-y-6">
+            <h3 class="font-bold text-gray-800 text-xs uppercase tracking-widest flex items-center gap-2">
+              <i class="ph ph-code text-[#060b24]"></i> Travaux & Supports Techniques
             </h3>
             
             <div v-if="technicalVideos.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div v-for="video in technicalVideos" :key="video.id" class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden">
+              <div v-for="video in technicalVideos" :key="video.id" class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden flex flex-col">
                 <div class="aspect-video bg-black">
-                  <video 
-                    :key="video.nom_fichier" 
-                    controls 
-                    preload="metadata" 
-                    class="w-full h-full"
-                    crossorigin="anonymous"
-                  >
+                  <video :key="video.nom_fichier" controls preload="metadata" class="w-full h-full" crossorigin="anonymous">
                     <source :src="video.nom_fichier" type="video/mp4">
-                    Votre navigateur ne supporte pas la lecture de vidéos.
                   </video>
                 </div>
-                <div class="p-4">
-                  <h4 class="font-bold text-gray-900 text-xs lowercase">{{ video.titre }}</h4>
-                  <p class="text-[10px] text-gray-500 mt-2 leading-relaxed italic">{{ video.description }}</p>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h4 class="font-black text-gray-900 text-sm uppercase mb-2">{{ video.titre }}</h4>
+                    <p class="text-[11px] text-gray-500 leading-relaxed italic line-clamp-3">{{ video.description }}</p>
+                  </div>
                   
-                  <div class="mt-4 flex items-center justify-between border-t border-gray-50 pt-3">
-                    <p class="text-[9px] text-gray-400 uppercase tracking-wide">
-                      <i class="ph ph-calendar-blank"></i> {{ new Date(video.date_creation).toLocaleDateString('fr-FR') }}
+                  <div class="mt-6 flex items-center justify-between pt-4 border-t border-gray-50">
+                    <p class="text-[9px] text-gray-400 font-medium">
+                      <i class="ph ph-calendar-blank"></i> AJOUTÉ LE {{ new Date(video.date_creation).toLocaleDateString('fr-FR') }}
                     </p>
-                    
-                    <span :class="video.jours_restants <= 3 ? 'bg-red-50 text-red-700 border-red-100' : 'bg-gray-50 text-gray-600 border-gray-200'"
-                          class="text-[9px] px-2 py-0.5 rounded-xs border flex items-center gap-1 font-bold">
-                      <i :class="video.jours_restants <= 3 ? 'ph-fill ph-clock-countdown' : 'ph ph-clock'"></i>
-                      J-{{ video.jours_restants }}
+                    <span :class="video.jours_restants <= 3 ? 'text-red-600 font-bold' : 'text-gray-500'" class="text-[10px] flex items-center gap-1 uppercase tracking-tighter">
+                      <i class="ph ph-clock-afternoon"></i> J-{{ video.jours_restants }}
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-            
-            <div v-else class="p-12 border border-dashed border-gray-200 rounded-xs text-center opacity-40">
-                <i class="ph ph-video-slash text-4xl mb-2"></i>
-                <p class="text-[10px] font-light italic">Aucun support technique n'est disponible pour le moment.</p>
-            </div>
           </div>
         </div>
 
         <div class="lg:col-span-3">
-          <div class="bg-white rounded-xs border border-gray-200 shadow-sm p-5 sticky top-8">
-            <h4 class="text-[11px] font-black text-[#060b24] uppercase tracking-widest mb-4">Architecture</h4>
-            <div class="space-y-4">
+          <div class="bg-white rounded-xs border border-gray-200 shadow-sm p-6 sticky top-8">
+            <h4 class="text-[11px] font-black text-[#060b24] uppercase tracking-widest mb-6">Système & Infra</h4>
+            <div class="space-y-5">
               <div class="flex items-start gap-3">
                 <i class="ph ph-server text-xl text-blue-600"></i>
-                <p class="text-[10px] text-gray-600 leading-tight">Stockage source : <br><b class="text-gray-900">Penguin (Local)</b></p>
+                <p class="text-[10px] text-gray-600 leading-tight">Hôte Local : <br><b class="text-gray-900">Penguin Server</b></p>
               </div>
               <div class="flex items-start gap-3">
                 <i class="ph ph-cloud-check text-xl text-green-600"></i>
-                <p class="text-[10px] text-gray-600 leading-tight">Diffusion : <br><b class="text-gray-900">Azure Web App</b></p>
+                <p class="text-[10px] text-gray-600 leading-tight">Edge Node : <br><b class="text-gray-900">Azure Cloud Instance</b></p>
               </div>
               <hr class="border-gray-100">
               <p class="text-[9px] text-gray-400 italic leading-relaxed">
-                Le streaming est opéré via un tunnel sécurisé entre mon environnement on-premise et le cloud public.
+                Flux sécurisé via tunnel chiffré. Rétention automatique des données limitée à 15 jours pour optimisation du stockage local.
               </p>
             </div>
           </div>
