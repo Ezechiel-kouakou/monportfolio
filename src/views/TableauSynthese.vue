@@ -236,8 +236,8 @@ const showExcelPreview = ref(false);
 
 const docs = ref([
   { id: 1, nom: "Compétence - 01", path: "/doc/competence01", lien: "/docs/Competence01.pdf", date: dateAujourdhui },
-  { id: 2, nom: "Compétence - 07", path: "/doc/competence07", lien: "/docs/architecture.pdf", date: dateAujourdhui },
-  { id: 3, nom: "Compétence - 11", path: "/doc/competence11", lien: "/assets/certificat.pdf", date: dateAujourdhui },
+  { id: 2, nom: "Compétence - 07", path: "/doc/competence07", lien: "/docs/Competence07.pdf", date: dateAujourdhui },
+  { id: 3, nom: "Compétence - 11", path: "/doc/competence11", lien: "/docs/Competence11.pdf", date: dateAujourdhui },
   { id: 4, nom: "Compétence - 14", path: "/doc/competence14", lien: "/docs/Competence14.pdf", date: dateAujourdhui },
   { id: 5, nom: "Compétence - 17", path: "/doc/competence17", lien: "/docs/Competence17.pdf", date: dateAujourdhui }
 ]);

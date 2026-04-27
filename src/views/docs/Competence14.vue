@@ -22,7 +22,7 @@
         
         <div class="p-5 md:p-8 border-b border-gray-100 bg-gray-50/50">
           <h1 class="text-[10px] md:text-xs uppercase tracking-widest text-blue-600 font-bold mb-2">Réalisation Professionnelle</h1>
-          <h2 class="text-xl md:text-2xl font-bold text-gray-900 leading-tight">Kouakou (Chef de Projet) : Pilotage et Déploiement [cite: 131]</h2>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-900 leading-tight">Kouakou (Chef de Projet) : Pilotage et Déploiement</h2>
           <p class="text-[11px] md:text-sm text-gray-500 mt-2">Session BTS 2026 | Date : 24 avril 2026</p>
         </div>
 
@@ -57,26 +57,26 @@
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
                   <div class="space-y-2">
-                    <span class="text-[9px] font-bold text-gray-400 uppercase">Structure API développée [cite: 146]</span>
+                    <span class="text-[9px] font-bold text-gray-400 uppercase">Structure API développée</span>
                     <pre class="bg-zinc-900 text-zinc-100 p-3 rounded-xs text-[10px] overflow-x-auto shadow-inner custom-scrollbar"><code>GET /api/vi/data-interop
-Authorization: Bearer [TOKEN_AZURE] [cite: 148]
+Authorization: Bearer [TOKEN_AZURE]
 
-// Réponse JSON attendue [cite: 149]
+// Réponse JSON attendue
 {
-  "status": 200, [cite: 150]
-  "data": { [cite: 151]
-    "source": "azure-db", [cite: 152]
-    "records": 142 [cite: 153]
+  "status": 200,
+  "data": {
+    "source": "azure-db",
+    "records": 142
   }
 }</code></pre>
                   </div>
                   <div class="space-y-2">
-                    <span class="text-[9px] font-bold text-gray-400 uppercase">Snippet Google Analytics (GA4) [cite: 168]</span>
-                    <pre class="bg-zinc-900 text-zinc-100 p-3 rounded-xs text-[10px] overflow-x-auto shadow-inner custom-scrollbar"><code>&lt;script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"&gt;&lt;/script&gt; [cite: 169, 170]
+                    <span class="text-[9px] font-bold text-gray-400 uppercase">Snippet Google Analytics (GA4)</span>
+                    <pre class="bg-zinc-900 text-zinc-100 p-3 rounded-xs text-[10px] overflow-x-auto shadow-inner custom-scrollbar"><code>&lt;script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"&gt;&lt;/script&gt;
 &lt;script&gt;
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);} 
-  gtag('js', new Date()); [cite: 174]
+  gtag('js', new Date());
   gtag('config', 'G-XXXXXXXXXX'); 
 &lt;/script&gt;</code></pre>
                   </div>
@@ -136,11 +136,11 @@ mysql -u root -p -e "SELECT COUNT(*) FROM seyrin-db_local.users;" </code></pre>
 
 <script setup>
 const skills = [
-  { code: 'C12', text: "Organisation du projet et attribution des tâches via Trello [cite: 135]" },
-  { code: 'C12', text: "Développement d'API et amélioration des fonctionnalités du site [cite: 139]" },
-  { code: 'C11', text: "Analyse de la présence en ligne avec Google Analytics [cite: 137]" },
-  { code: 'C17', text: "Déploiement sur Azure et gestion du nom de domaine [cite: 138]" },
-  { code: 'C4', text: "Tests d'intégralité du serveur et gestion des rôles GLPI [cite: 136]" }
+  { code: 'C12', text: "Organisation du projet et attribution des tâches via Trello" },
+  { code: 'C12', text: "Développement d'API et amélioration des fonctionnalités du site" },
+  { code: 'C11', text: "Analyse de la présence en ligne avec Google Analytics" },
+  { code: 'C17', text: "Déploiement sur Azure et gestion du nom de domaine" },
+  { code: 'C4', text: "Tests d'intégralité du serveur et gestion des rôles GLPI" }
 ];
 
 const imprimerPage = () => {
