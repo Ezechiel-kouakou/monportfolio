@@ -51,8 +51,8 @@
             <div class="p-6">
               <div v-if="presentationVideo">
                 <div class="mb-4">
-                  <span :class="presentationVideo.jours_restants <= 3 ? 'text-red-600 font-light animate-pulse' : 'text-amber-700'" 
-                        class="text-[10px] flex items-center gap-1.5 bg-amber-50 px-3 py-1 rounded-full border border-amber-100 w-fit">
+                  <span :class="presentationVideo.jours_restants <= 3 ? 'text-red-800 font-light animate-pulse' : 'text-amber-700'" 
+                        class="text-[10px] flex items-center gap-1.5 bg-transparent px-3 py-1   w-fit">
                     <i class="ph-fill ph-hourglass-high"></i>
                    Suppression automatique dans {{ presentationVideo.jours_restants }} jours
                   </span>
@@ -67,7 +67,7 @@
                 <div class="mt-6">
                   <h2 class="text-xl font-black text-gray-900 capitalize">{{ presentationVideo.titre }}</h2>
                   <p class="text-sm text-gray-500 mt-2 leading-relaxed">{{ presentationVideo.description }}</p>
-                  <p class="text-[9px] text-gray-400 mt-3 uppercase tracking-wide">
+                  <p class="text-[9px] text-gray-400 mt-3 lowercase tracking-wide">
                     <i class="ph ph-calendar-blank"></i> Ajouté le {{ new Date(presentationVideo.date_creation).toLocaleDateString('fr-FR') }}
                   </p>
                 </div>
@@ -108,7 +108,7 @@
                     <p class="text-[9px] text-gray-400 uppercase tracking-wide">
                       <i class="ph ph-calendar-blank"></i> {{ new Date(video.date_creation).toLocaleDateString('fr-FR') }}
                     </p>
-                    <span :class="video.jours_restants <= 3 ? 'text-red-600 font-light' : 'text-gray-500'" class="text-[10px] flex items-center gap-1 uppercase tracking-tighter">
+                    <span :class="video.jours_restants <= 3 ? 'text-red-800 font-light' : 'text-gray-500'" class="text-[10px] flex items-center gap-1 uppercase tracking-tighter">
                       <i class="ph-fill ph-clock-countdown"></i> J-{{ video.jours_restants }}
                     </span>
                   </div>
