@@ -1,5 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: https://www.ezechielkouakou.fr");
+header("Access-Control-Allow-Origin: https://www.ezechielkouakou.fr , http://localhost:5173/");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET");
 
