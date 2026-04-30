@@ -20,7 +20,7 @@
           <p class="text-sm md:text-base text-gray-500 max-w-xl leading-relaxed">
             « Créé par les étudiants, fait pour les étudiants. » <br>
             Découvrez mes démonstrations de projets et présentations professionnelles, 
-            hébergées sur mon infrastructure hybride Penguin & Azure.
+            hébergées sur mon infrastructure hybride Penguin(Linux Crostini) & Azure.
           </p>
 
           <div class="flex items-center gap-4 pt-2">
@@ -67,8 +67,8 @@
                 <div class="mt-6">
                   <h2 class="text-xl font-black text-gray-900 capitalize">{{ presentationVideo.titre }}</h2>
                   <p class="text-sm text-gray-500 mt-2 leading-relaxed">{{ presentationVideo.description }}</p>
-                  <p class="text-[9px] text-gray-400 mt-3 lowercase tracking-wide">
-                    <i class="ph ph-calendar-blank"></i> Ajouté le {{ new Date(presentationVideo.date_creation).toLocaleDateString('fr-FR') }}
+                  <p class="text-[8px] text-gray-400 mt-3 lowercase tracking-wide">
+                    <i class="ph ph-calendar-blank"></i> publiée le {{ new Date(presentationVideo.date_creation).toLocaleDateString('fr-FR') }}
                   </p>
                 </div>
               </div>
@@ -78,8 +78,8 @@
                   <i class="ph ph-hourglass-high text-2xl text-amber-500"></i>
                 </div>
                 <h4 class="text-gray-900 font-bold text-base">La vidéo n'a pas encore été rajoutée par son propriétaire.</h4>
-                <div class="mt-4 px-5 py-2 bg-[#f0f7ff] border border-blue-100 rounded-xs text-[#060b24] text-xs font-bold">
-                  Date d'ajout prévue : jusqu'au 30/04/2026
+                <div class="mt-4 px-5 py-2 bg-[#f0f7ff] border border-blue-100 rounded-xs text-[#060b24] text-xs font-light">
+                  Date d'ajout prévue : jusqu'au 05/05/2026
                 </div>
                 <p class="text-[10px] text-gray-400 mt-4 lowercase italic tracking-tight">
                   <i class="ph ph-info"></i> merci de revenir de temps en temps visiter afin de rester informer.
