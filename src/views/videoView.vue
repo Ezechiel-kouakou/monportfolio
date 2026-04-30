@@ -5,13 +5,13 @@
       <div class="max-w-[1400px] mx-auto flex flex-col md:flex-row items-stretch">
         <div class="flex-1 px-4 md:px-8 py-16 md:py-24 space-y-6 self-center">
           <div class="inline-flex items-center gap-2 px-3 py-4 bg-transparent text-[#060b24] rounded-xs  border-blue-100 text-[15px] md:text-[11px] font-light capitalize tracking-wider">
-                 <i class="ph ph-stack text-[25px] text-blue-400"></i> Ezechiel Kouakou Media Hub
+            <i class="ph ph-stack text-[25px] text-blue-400"></i> Ezechiel Kouakou Media Hub
           </div>
           <div class="w-16 h-1 bg-gradient-to-r from-[#060b24] to-transparent rounded-full"></div>
           <p class="text-[11px] text-amber-800 text-center font-medium">
-        <i class="ph ph-warning-circle"></i> 
-        Note : Pour visionner les vidéos sur Google Chrome, veuillez autoriser l'accès au réseau privé ou utiliser Edge/Safari.
-      </p>
+            <i class="ph ph-warning-circle"></i> 
+            Note : Pour visionner les vidéos sur Google Chrome, veuillez autoriser l'accès au réseau privé ou utiliser Edge/Safari.
+          </p>
           
           <h1 class="text-3xl md:text-5xl font-black text-gray-900 leading-[1.1] tracking-tight">
             Médiathèque Technique <br>
@@ -51,10 +51,16 @@
             <div class="p-6">
               <div v-if="presentationVideo">
                 <div class="mb-4">
-                  <span :class="presentationVideo.jours_restants <= 3 ? 'text-red-800 font-light animate-pulse' : 'text-amber-700'" 
-                        class="text-[10px] flex items-center gap-1.5 bg-transparent px-3 py-1   w-fit">
+                  <!-- MODIF : Affichage conditionnel selon le mode_suppression -->
+                  <span v-if="presentationVideo.mode_suppression === '15j'"
+                        :class="presentationVideo.jours_restants <= 3 ? 'text-red-800 font-light animate-pulse' : 'text-amber-700'" 
+                        class="text-[10px] flex items-center gap-1.5 bg-transparent px-3 py-1 w-fit">
                     <i class="ph-fill ph-hourglass-high"></i>
-                   Suppression automatique dans {{ presentationVideo.jours_restants }} jours
+                    Suppression automatique dans {{ presentationVideo.jours_restants }} jours
+                  </span>
+                  <span v-else class="text-blue-700 text-[10px] flex items-center gap-1.5 bg-blue-50/50 px-3 py-1 rounded-xs w-fit">
+                    <i class="ph-fill ph-shield-check"></i>
+                    Conservation permanente
                   </span>
                 </div>
 
@@ -108,8 +114,15 @@
                     <p class="text-[9px] text-gray-400 uppercase tracking-wide">
                       <i class="ph ph-calendar-blank"></i> {{ new Date(video.date_creation).toLocaleDateString('fr-FR') }}
                     </p>
-                    <span :class="video.jours_restants <= 3 ? 'text-red-800 font-light' : 'text-gray-500'" class="text-[10px] flex items-center gap-1 uppercase tracking-tighter">
+                    
+                    <!-- MODIF : Condition sur le badge J-X -->
+                    <span v-if="video.mode_suppression === '15j'" 
+                          :class="video.jours_restants <= 3 ? 'text-red-800 font-light' : 'text-gray-500'" 
+                          class="text-[10px] flex items-center gap-1 uppercase tracking-tighter">
                       <i class="ph-fill ph-clock-countdown"></i> J-{{ video.jours_restants }}
+                    </span>
+                    <span v-else class="text-[9px] text-green-600 font-medium uppercase tracking-tighter">
+                      <i class="ph-fill ph-infinity"></i> Permanent
                     </span>
                   </div>
                 </div>
