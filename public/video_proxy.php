@@ -12,7 +12,7 @@ if (empty($file)) {
 }
 
 // URL cible sur Penguin
-$source_url = "http://100.65.154.19/" . $file; 
+$source_url = "https://penguin.tailc4a1d9.ts.net/" . $file; 
 
 // On active l'affichage des erreurs PHP pour le débug
 ini_set('display_errors', 1);
