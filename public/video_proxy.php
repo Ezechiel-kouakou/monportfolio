@@ -1,28 +1,19 @@
 <?php
+// video_proxy.php sur l'App Service Azure
 header("Access-Control-Allow-Origin: https://www.ezechielkouakou.fr");
-
-$file = basename($_GET['file'] ?? '');
-if (empty($file)) die("Erreur : Aucun fichier spécifié.");
-
-// REMPLACE PAR L'IP TAILSCALE DE TON SERVEUR AZURE
-$ip_azure_vpn = "100.72.255.10"; // <--- CHANGE CETTE IP
-$target = "http://" . $ip_azure_vpn . "/video-local/" . $file;
-
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $target);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, ["Host: serverazure.tailc4a1d9.ts.net"]);
-
-// Pour le débug, on affiche l'erreur si ça rate
-curl_setopt($ch, CURLOPT_FAILONERROR, true);
-
 header("Content-Type: video/mp4");
 
-if (!curl_exec($ch)) {
-    header("Content-Type: text/plain");
-    echo "Erreur de routage interne Azure.\n";
-    echo "Cible tentée : " . $target . "\n";
-    echo "Détail : " . curl_error($ch);
+$file = $_GET['file'] ?? '';
+if (!$file) exit;
+
+// On appelle ta VM qui, elle, a l'accès à Penguin
+$vm_bridge_url = "http://20.199.14.132/video-local/" . $file;
+
+$handle = fopen($vm_bridge_url, "rb");
+if ($handle) {
+    while (!feof($handle)) {
+        echo fread($handle, 8192);
+        flush();
+    }
+    fclose($handle);
 }
-curl_close($ch);
