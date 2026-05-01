@@ -4,27 +4,23 @@ header("Access-Control-Allow-Origin: https://www.ezechielkouakou.fr");
 $file = basename($_GET['file'] ?? '');
 if (empty($file)) die("Fichier manquant.");
 
-$ip_penguin = "100.65.154.19";
-// ON UTILISE LE PORT 8082 ICI
-$source_url = "http://" . $ip_penguin . ":8082/" . $file; 
+$target = "http://100.65.154.19:8082/" . $file;
 
-$context = stream_context_create([
-    "http" => [
-        "header" => "Host: penguin.tailc4a1d9.ts.net\r\n", 
-        "timeout" => 20
-    ]
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $target);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, false); // On affiche directement
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Host: penguin.tailc4a1d9.ts.net"
 ]);
 
-$stream = @fopen($source_url, 'rb', false, $context);
+// On définit le type de contenu avant de lancer
+header("Content-Type: video/mp4");
 
-if ($stream) {
-    if (ob_get_level()) ob_end_clean();
-    header("Content-Type: video/mp4");
-    fpassthru($stream);
-    fclose($stream);
-} else {
-    header("Content-Type: text/plain; charset=UTF-8");
-    $err = error_get_last();
-    echo "Impossible de joindre Penguin sur le port 8082.\n";
-    echo "Erreur : " . ($err['message'] ?? "Vérifiez que le conteneur a bien démarré.");
+if (!curl_exec($ch)) {
+    header("Content-Type: text/plain");
+    echo "Erreur cURL : " . curl_error($ch);
 }
+
+curl_close($ch);
