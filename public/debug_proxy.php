@@ -1,4 +1,6 @@
 <?php
+header("Content-Type: text/plain");
+
 // Test 1 : curl est-il dispo ?
 echo "curl installé : " . (function_exists('curl_init') ? "OUI" : "NON") . "\n";
 
