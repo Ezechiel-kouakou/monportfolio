@@ -1,22 +1,41 @@
 <?php
-$file = $_GET['file'] ?? '';
+/* --- CONFIGURATION DES ENTÊTES (Identique à ton API) --- */
+header("Access-Control-Allow-Origin: https://www.ezechielkouakou.fr");
+header("Content-Type: video/mp4"); // On change juste le type de contenu
+header("Access-Control-Allow-Methods: GET");
 
-if (empty($file) || !preg_match('/^video_[a-zA-Z0-9._-]+$/', $file)) {
-    http_response_code(400);
-    die("Fichier non valide.");
+/* --- SÉCURITÉ REFERER (Identique à ton API) --- */
+$referer = $_SERVER['HTTP_REFERER'] ?? '';
+if (empty($referer) || strpos($referer, 'ezechielkouakou.fr') === false) {
+    http_response_code(403);
+    echo "Accès direct interdit. Ce flux est réservé au portfolio.";
+    exit;
 }
 
-$penguin_url = "https://penguin.tailc4a1d9.ts.net/" . $file;
+/* --- LOGIQUE RÉSEAU (Adaptée pour le streaming) --- */
+$file_param = $_GET['file'] ?? '';
+$file = basename($file_param); 
 
+if (empty($file)) {
+    http_response_code(400);
+    die("Fichier manquant.");
+}
 
-header('Content-Type: video/mp4');
-header('Access-Control-Allow-Origin: *');
+// C'est ici que la différence se joue : au lieu de file_exists(cache), 
+// on vérifie si Penguin répond via Tailscale
+$source_url = "http://100.65.154.19/" . $file; 
 
-$stream = fopen($penguin_url, 'rb');
+// On tente d'ouvrir le flux vers Penguin
+$stream = @fopen($source_url, 'rb');
+
 if ($stream) {
+    // Si la connexion réussit, on "echo" le contenu (comme ton API fait echo $data)
+    // Mais on utilise fpassthru car une vidéo est trop lourde pour un simple echo
     fpassthru($stream);
     fclose($stream);
 } else {
+    // Si Penguin est éteint ou Tailscale coupé (Equivalent de ton 404 cache)
     http_response_code(404);
-    echo "Vidéo introuvable sur le serveur source.";
+    echo "Source vidéo non disponible (Vérifiez le serveur Penguin).";
 }
+?>
