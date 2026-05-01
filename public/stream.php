@@ -1,33 +1,31 @@
 <?php
-// stream.php sur Azure
-header("Access-Control-Allow-Origin: https://www.ezechielkouakou.fr");
+// On empêche PHP de limiter le temps d'exécution
+set_time_limit(0);
+
+// Désactivation de la compression qui bloque le streaming
+if (function_exists('apache_setenv')) { @apache_setenv('no-gzip', 1); }
+@ini_set('zlib.output_compression', 'Off');
+
+header("Access-Control-Allow-Origin: *");
 header("Content-Type: video/mp4");
 
 $video = $_GET['v'] ?? '';
-if (empty($video)) die("Pas de video");
+if (empty($video)) die();
 
 $url = "http://20.199.14.132/video-local/" . $video;
 
-// Configuration du contexte pour simuler un appel local
-$opts = [
-    "http" => [
-        "method" => "GET",
-        "header" => "Host: localhost\r\n" // On fait croire à Apache que c'est un appel local
-    ]
-];
+// On vide tous les tampons de sortie de PHP
+while (ob_get_level()) ob_end_clean();
 
-$context = stream_context_create($opts);
-
-// On lance le flux
-$fp = fopen($url, 'rb', false, $context);
+$fp = fopen($url, 'rb');
 
 if ($fp) {
+    // On lit par petits blocs de 4 Ko pour une fluidité maximale
     while (!feof($fp)) {
-        echo fread($fp, 8192);
-        flush();
+        echo fread($fp, 4096);
+        // La commande magique pour envoyer les données au navigateur MAINTENANT
+        flush(); 
+        if (connection_aborted()) break;
     }
     fclose($fp);
-} else {
-    header("HTTP/1.1 502 Bad Gateway");
-    echo "Le pont Azure n'arrive pas à joindre la VM.";
 }
