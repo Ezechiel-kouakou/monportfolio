@@ -103,7 +103,10 @@
               <div v-for="video in technicalVideos" :key="video.id" class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden">
                 <div class="aspect-video bg-black">
                   <video :key="video.nom_fichier" controls preload="metadata" class="w-full h-full" crossorigin="anonymous">
-                    <source :src="video.nom_fichier" type="video/mp4">
+                    <source 
+    :src="'https://www.ezechielkouakou.fr/video_proxy.php?file=' + video.nom_fichier" 
+    type="video/mp4"
+  >
                   </video>
                 </div>
                 <div class="p-4">
