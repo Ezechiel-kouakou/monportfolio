@@ -1,31 +1,35 @@
 <?php
-// On empêche PHP de limiter le temps d'exécution
-set_time_limit(0);
-
-// Désactivation de la compression qui bloque le streaming
-if (function_exists('apache_setenv')) { @apache_setenv('no-gzip', 1); }
-@ini_set('zlib.output_compression', 'Off');
-
-header("Access-Control-Allow-Origin: *");
+// stream.php sur Azure
+header("Access-Control-Allow-Origin: https://www.ezechielkouakou.fr");
 header("Content-Type: video/mp4");
 
+// 1. Force la désactivation du tampon de sortie PHP pour éviter l'attente
+while (ob_get_level()) ob_end_clean();
+
 $video = $_GET['v'] ?? '';
-if (empty($video)) die();
+if (empty($video)) die("Pas de video");
 
 $url = "http://20.199.14.132/video-local/" . $video;
 
-// On vide tous les tampons de sortie de PHP
-while (ob_get_level()) ob_end_clean();
+$opts = [
+    "http" => [
+        "method" => "GET",
+        "header" => "Host: localhost\r\n"
+    ]
+];
 
-$fp = fopen($url, 'rb');
+$context = stream_context_create($opts);
+
+$fp = fopen($url, 'rb', false, $context);
 
 if ($fp) {
-    // On lit par petits blocs de 4 Ko pour une fluidité maximale
+    // 2. On lit par blocs plus petits (4096 au lieu de 8192) pour que le lecteur reçoive vite les premières images
     while (!feof($fp)) {
         echo fread($fp, 4096);
-        // La commande magique pour envoyer les données au navigateur MAINTENANT
-        flush(); 
-        if (connection_aborted()) break;
+        flush(); // Envoie immédiatement ce qui vient d'être lu
     }
     fclose($fp);
+} else {
+    header("HTTP/1.1 502 Bad Gateway");
+    echo "Le pont Azure n'arrive pas à joindre la VM.";
 }
