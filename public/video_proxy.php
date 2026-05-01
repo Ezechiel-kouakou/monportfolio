@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: https://www.ezechielkouakou.fr");
 $file = basename($_GET['file'] ?? '');
 if (empty($file)) die("Fichier manquant.");
 
-$target = "http://100.65.154.19:8082/" . $file;
+$target = "http://localhost/video-local/" . $file;
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $target);
