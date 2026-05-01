@@ -1,41 +1,42 @@
 <?php
-/* --- CONFIGURATION DES ENTÊTES (Identique à ton API) --- */
+/* --- CONFIGURATION DES ENTÊTES --- */
 header("Access-Control-Allow-Origin: https://www.ezechielkouakou.fr");
-header("Content-Type: video/mp4"); // On change juste le type de contenu
 header("Access-Control-Allow-Methods: GET");
 
-/* --- SÉCURITÉ REFERER (Identique à ton API) --- */
-$referer = $_SERVER['HTTP_REFERER'] ?? '';
-if (empty($referer) || strpos($referer, 'ezechielkouakou.fr') === false) {
-    http_response_code(403);
-    echo "Accès direct interdit. Ce flux est réservé au portfolio.";
-    exit;
-}
-
-/* --- LOGIQUE RÉSEAU (Adaptée pour le streaming) --- */
 $file_param = $_GET['file'] ?? '';
 $file = basename($file_param); 
 
 if (empty($file)) {
-    http_response_code(400);
-    die("Fichier manquant.");
+    header("Content-Type: text/plain");
+    die("Erreur : Aucun fichier spécifié dans l'URL.");
 }
 
-// C'est ici que la différence se joue : au lieu de file_exists(cache), 
-// on vérifie si Penguin répond via Tailscale
+// URL cible sur Penguin
 $source_url = "http://100.65.154.19/" . $file; 
 
-// On tente d'ouvrir le flux vers Penguin
+// On active l'affichage des erreurs PHP pour le débug
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// On tente d'ouvrir le flux
 $stream = @fopen($source_url, 'rb');
 
 if ($stream) {
-    // Si la connexion réussit, on "echo" le contenu (comme ton API fait echo $data)
-    // Mais on utilise fpassthru car une vidéo est trop lourde pour un simple echo
+    // Si ça marche, on envoie la vidéo
+    header("Content-Type: video/mp4");
     fpassthru($stream);
     fclose($stream);
 } else {
-    // Si Penguin est éteint ou Tailscale coupé (Equivalent de ton 404 cache)
-    http_response_code(404);
-    echo "Source vidéo non disponible (Vérifiez le serveur Penguin).";
+    // SI ÇA ÉCHOUE : On change le type en TEXTE pour voir l'erreur
+    header("Content-Type: text/plain; charset=UTF-8");
+    $last_error = error_get_last();
+    
+    echo "--- DIAGNOSTIC D'ERREUR ---\n";
+    echo "Cible : " . $source_url . "\n";
+    echo "Le serveur Azure n'a pas pu ouvrir la vidéo.\n";
+    echo "Raison possible : " . ($last_error['message'] ?? "Aucun message d'erreur système.");
+    echo "\n\nVérifications à faire :\n";
+    echo "1. Est-ce que 'serverazure' est BIEN VERT (connecté) dans Tailscale ?\n";
+    echo "2. Est-ce que tu peux ping 100.65.154.19 depuis le terminal Azure ?\n";
 }
 ?>

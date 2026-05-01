@@ -291,4 +291,4 @@ onMounted(fetchData);
   .max-w-\[1400px\] { max-width: 100% !important; }
   .bg-\[#f3f2ef\] { background: white !important; }
 }
-</style>
+</style>²
