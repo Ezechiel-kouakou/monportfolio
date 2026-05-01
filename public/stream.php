@@ -1,35 +1,36 @@
 <?php
-// Désactiver les limites de temps et la compression
-set_time_limit(0);
+// Désactiver la compression Gzip qui casse le streaming vidéo
 if (function_exists('apache_setenv')) { @apache_setenv('no-gzip', 1); }
 @ini_set('zlib.output_compression', 'Off');
 
-// Headers de partage
 header("Access-Control-Allow-Origin: https://www.ezechielkouakou.fr");
-header("Content-Type: video/mp4");
 
 $video = $_GET['v'] ?? '';
 if (empty($video)) {
+    header("HTTP/1.1 400 Bad Request");
     die("Nom de vidéo manquant.");
 }
 
-// L'URL de ta VM (qui répond 200 OK en local)
 $url_vm = "http://20.199.14.132/video-local/" . $video;
 
-// Nettoyage du tampon de sortie
+// On vérifie si la VM répond avant de lancer le flux
+$headers = @get_headers($url_vm);
+if(!$headers || strpos($headers[0], '404') !== false) {
+    header("HTTP/1.1 404 Not Found");
+    die("La vidéo n'est pas accessible sur le pont Azure/Penguin.");
+}
+
+header("Content-Type: video/mp4");
+
+// Vider tous les tampons PHP pour envoyer les données en direct
 while (ob_get_level()) ob_end_clean();
 
-// Ouverture directe du flux vers la VM
 $fp = fopen($url_vm, 'rb');
-
 if ($fp) {
-    // On transmet les données par blocs de 8 Ko
+    // On lit par petits morceaux pour ne pas saturer la RAM
     while (!feof($fp)) {
-        echo fread($fp, 8192);
-        flush();
+        echo fread($fp, 1024 * 8); // 8kb par 8kb
+        flush(); 
     }
     fclose($fp);
-} else {
-    header("HTTP/1.1 500 Internal Server Error");
-    echo "Impossible d'ouvrir le flux vidéo vers la VM.";
 }
