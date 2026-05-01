@@ -104,7 +104,7 @@
                 <div class="aspect-video bg-black">
                   <video :key="video.nom_fichier" controls preload="metadata" class="w-full h-full" crossorigin="anonymous">
                     <source 
-    :src="'https://www.ezechielkouakou.fr/video_proxy.php?file=' + video.nom_fichier" 
+:src="'https://www.ezechielkouakou.fr/video_proxy.php?file=' + video.nom_fichier.split('/').pop()"
     type="video/mp4"
   >
                   </video>
