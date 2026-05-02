@@ -65,7 +65,7 @@
 
                 <div class="aspect-video bg-black rounded-xs overflow-hidden border border-gray-200 shadow-inner">
                   <video :key="presentationVideo.nom_fichier" controls class="w-full h-full" crossorigin="anonymous">
-                    <source :src="`https://penguin.tailc4a1d9.ts.net/${presentationVideo.nom_fichier.split('file=').pop()}`" type="video/mp4">
+                    <source :src="presentationVideo.nom_fichier" type="video/mp4">
                   </video>
                 </div>
 
@@ -102,7 +102,7 @@
               <div v-for="video in technicalVideos" :key="video.id" class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden">
                 <div class="aspect-video bg-black">
                   <video :key="video.nom_fichier" controls preload="metadata" class="w-full h-full" crossorigin="anonymous">
-                    <source :src="`https://penguin.tailc4a1d9.ts.net/${video.nom_fichier.split('file=').pop()}`" type="video/mp4">
+                    <source :src="video.nom_fichier" type="video/mp4">
                   </video>
                 </div>
                 <div class="p-4">
