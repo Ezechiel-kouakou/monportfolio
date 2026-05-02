@@ -4,7 +4,7 @@
     <div class="bg-white border-b border-gray-200 shadow-sm overflow-hidden">
       <div class="max-w-[1400px] mx-auto flex flex-col md:flex-row items-stretch">
         <div class="flex-1 px-4 md:px-8 py-16 md:py-24 space-y-6 self-center">
-          <div class="inline-flex items-center gap-2 px-3 py-4 bg-transparent text-[#060b24] rounded-xs  border-blue-100 text-[15px] md:text-[11px] font-light capitalize tracking-wider">
+          <div class="inline-flex items-center gap-2 px-3 py-4 bg-transparent text-[#060b24] rounded-xs border-blue-100 text-[15px] md:text-[11px] font-light capitalize tracking-wider">
             <i class="ph ph-stack text-[25px] text-blue-400"></i> Ezechiel Kouakou Media Hub
           </div>
           <div class="w-16 h-1 bg-gradient-to-r from-[#060b24] to-transparent rounded-full"></div>
@@ -51,7 +51,6 @@
             <div class="p-6">
               <div v-if="presentationVideo">
                 <div class="mb-4">
-                  <!-- MODIF : Affichage conditionnel selon le mode_suppression -->
                   <span v-if="presentationVideo.mode_suppression === '15j'"
                         :class="presentationVideo.jours_restants <= 3 ? 'text-red-800 font-light animate-pulse' : 'text-amber-700'" 
                         class="text-[10px] flex items-center gap-1.5 bg-transparent px-3 py-1 w-fit">
@@ -64,12 +63,11 @@
                   </span>
                 </div>
 
-                  <div class="aspect-video bg-black rounded-xs overflow-hidden border border-gray-200 shadow-inner">
-  <video :key="presentationVideo.nom_fichier" controls class="w-full h-full" crossorigin="anonymous">
-    <!-- On utilise directement la propriété du JSON -->
-     <source :src="`https://www.ezechielkouakou.fr/video_proxy.php?file=${video.nom_fichier}`" type="video/mp4">
-  </video>
-</div>
+                <div class="aspect-video bg-black rounded-xs overflow-hidden border border-gray-200 shadow-inner">
+                  <video :key="presentationVideo.nom_fichier" controls class="w-full h-full" crossorigin="anonymous">
+                    <source :src="`https://www.ezechielkouakou.fr/video_proxy.php?file=${presentationVideo.nom_fichier}`" type="video/mp4">
+                  </video>
+                </div>
 
                 <div class="mt-6">
                   <h2 class="text-xl font-black text-gray-900 capitalize">{{ presentationVideo.titre }}</h2>
@@ -102,12 +100,11 @@
             
             <div v-if="technicalVideos.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div v-for="video in technicalVideos" :key="video.id" class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden">
-                    <div class="aspect-video bg-black">
-  <video :key="video.nom_fichier" controls preload="metadata" class="w-full h-full" crossorigin="anonymous">
-    <!-- Plus besoin de split ou de concaténation complexe ici -->
-     <source :src="`https://www.ezechielkouakou.fr/video_proxy.php?file=${presentationVideo.nom_fichier}`" type="video/mp4">
-  </video>
-</div>
+                <div class="aspect-video bg-black">
+                  <video :key="video.nom_fichier" controls preload="metadata" class="w-full h-full" crossorigin="anonymous">
+                    <source :src="`https://www.ezechielkouakou.fr/video_proxy.php?file=${video.nom_fichier}`" type="video/mp4">
+                  </video>
+                </div>
                 <div class="p-4">
                   <h4 class="font-bold text-gray-900 text-xs lowercase">{{ video.titre }}</h4>
                   <p class="text-[10px] text-gray-500 mt-2 leading-relaxed italic">{{ video.description }}</p>
@@ -116,8 +113,6 @@
                     <p class="text-[9px] text-gray-400 uppercase tracking-wide">
                       <i class="ph ph-calendar-blank"></i> {{ new Date(video.date_creation).toLocaleDateString('fr-FR') }}
                     </p>
-                    
-                    <!-- MODIF : Condition sur le badge J-X -->
                     <span v-if="video.mode_suppression === '15j'" 
                           :class="video.jours_restants <= 3 ? 'text-red-800 font-light' : 'text-gray-500'" 
                           class="text-[10px] flex items-center gap-1 uppercase tracking-tighter">
@@ -132,8 +127,8 @@
             </div>
             
             <div v-else class="p-12 border border-dashed border-gray-200 rounded-xs text-center opacity-40">
-                <i class="ph ph-video-slash text-4xl mb-2"></i>
-                <p class="text-[10px] font-light italic">Aucun support technique n'est disponible pour le moment.</p>
+              <i class="ph ph-video-slash text-4xl mb-2"></i>
+              <p class="text-[10px] font-light italic">Aucun support technique n'est disponible pour le moment.</p>
             </div>
           </div>
         </div>
@@ -148,11 +143,11 @@
               </div>
               <div class="flex items-start gap-3">
                 <i class="ph ph-cloud-check text-xl text-green-600"></i>
-                <p class="text-[10px] text-gray-600 leading-tight">Diffusion : <br><b class="text-gray-900">Azure Web App</b></p>
+                <p class="text-[10px] text-gray-600 leading-tight">Diffusion : <br><b class="text-gray-900">Tailscale Funnel</b></p>
               </div>
               <hr class="border-gray-100">
               <p class="text-[9px] text-gray-400 italic leading-relaxed">
-                Le streaming est opéré via un tunnel sécurisé entre mon environnement on-premise et le cloud public.
+                Le streaming est opéré via un tunnel sécurisé Tailscale Funnel, directement depuis mon serveur local Penguin.
               </p>
             </div>
           </div>
