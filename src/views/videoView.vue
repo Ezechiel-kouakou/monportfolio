@@ -67,7 +67,7 @@
                   <div class="aspect-video bg-black rounded-xs overflow-hidden border border-gray-200 shadow-inner">
   <video :key="presentationVideo.nom_fichier" controls class="w-full h-full" crossorigin="anonymous">
     <!-- On utilise directement la propriété du JSON -->
-    <source :src="presentationVideo.nom_fichier" type="video/mp4">
+     <source :src="`https://www.ezechielkouakou.fr/video_proxy.php?file=${video.nom_fichier}`" type="video/mp4">
   </video>
 </div>
 
@@ -105,7 +105,7 @@
                     <div class="aspect-video bg-black">
   <video :key="video.nom_fichier" controls preload="metadata" class="w-full h-full" crossorigin="anonymous">
     <!-- Plus besoin de split ou de concaténation complexe ici -->
-    <source :src="video.nom_fichier" type="video/mp4">
+     <source :src="`https://www.ezechielkouakou.fr/video_proxy.php?file=${presentationVideo.nom_fichier}`" type="video/mp4">
   </video>
 </div>
                 <div class="p-4">
@@ -167,38 +167,16 @@
 import { ref, onMounted, computed } from 'vue';
 
 const videos = ref([]);
-const loading = ref(true);
 
 const fetchData = async () => {
   try {
-    console.log("--- DEBUG : Début de récupération des données ---");
-    
     const response = await fetch('https://www.ezechielkouakou.fr/api_proxy.php');
     const data = await response.json();
-    
     if (data.success) {
-      console.log("✅ JSON reçu avec succès !");
-      
-      // On logue spécifiquement la liste des vidéos pour voir l'URL générée
-      if (data.videos && data.videos.length > 0) {
-        console.table(data.videos.map(v => ({
-          titre: v.titre,
-          url_source: v.nom_fichier,
-          type: v.type_video
-        })));
-      } else {
-        console.warn("⚠️ Aucune vidéo trouvée dans le JSON reçu.");
-      }
-      
       videos.value = data.videos || [];
-    } else {
-      console.error("❌ Le serveur a renvoyé success:false", data.message);
     }
   } catch (e) {
-    console.error("❌ Erreur critique lors du fetch :", e);
-  } finally {
-    loading.value = false;
-    console.log("--- DEBUG : Fin de récupération ---");
+    // silencieux en production
   }
 };
 
