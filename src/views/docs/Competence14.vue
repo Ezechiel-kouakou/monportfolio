@@ -9,8 +9,8 @@
         
         <div class="flex w-full sm:w-auto gap-3">
           <button @click="imprimerPage" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-xs text-xs md:text-sm font-medium hover:bg-gray-50 shadow-sm">
-  <i class="ph ph-printer"></i> Imprimer
-</button>
+            <i class="ph ph-printer"></i> Imprimer
+          </button>
           
           <a href="/docs/Competence14.pdf" download class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-[#060b24] text-white rounded-xs text-xs md:text-sm font-bold shadow-md hover:bg-opacity-90 transition-all">
             <i class="ph ph-download-simple"></i> Télécharger PDF
@@ -30,63 +30,39 @@
           
           <section>
             <h3 class="text-base md:text-lg font-bold text-[#060b24] flex items-center gap-2 mb-4">
-              <i class="ph ph-check-circle"></i> Compétences mises en œuvres
+              <i class="ph ph-check-circle"></i> Compétences managériales et techniques
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div v-for="skill in skills" :key="skill.code" class="flex items-start gap-3 p-3 bg-blue-50/50 rounded-xs border border-blue-100">
-                <span class="font-bold text-blue-700 text-[10px] md:text-xs mt-0.5 bg-blue-100 px-1.5 py-0.5 rounded">{{ skill.code }}</span>
+                <!-- <span class="font-bold text-blue-700 text-[10px] md:text-xs mt-0.5 bg-blue-100 px-1.5 py-0.5 rounded">{{ skill.code }}</span> -->
                 <p class="text-xs md:text-sm text-gray-700 leading-snug">{{ skill.text }}</p>
               </div>
             </div>
           </section>
 
           <section>
-            <h3 class="text-base md:text-lg font-bold text-[#060b24] mb-3">Contexte</h3>
+            <h3 class="text-base md:text-lg font-bold text-[#060b24] mb-3">Contexte de la mission</h3>
             <p class="text-xs md:text-sm text-gray-700 leading-relaxed italic bg-gray-50/50 p-4 rounded-xs border-l-2 border-gray-200">
-              Dans le cadre du projet hackaton j'ai supervisé l'amélioration technique, le déploiement d'une infrastructure web complète, l'organisation et l'attribution des tâches. L'objectif était d'organiser les tâches afin d'assurer le rendu du projet dans les délais et aussi d'assurer l'interopérabilité des données via des API tout en garantissant un hébergement cloud robuste sur Microsoft Azure.
+              Dans le cadre du projet hackathon, j'ai assuré la direction technique et l'organisation structurelle de l'infrastructure web. Mon rôle a été de garantir le respect des jalons du projet via une gestion de tâches rigoureuse et de superviser l'interopérabilité des systèmes entre Microsoft Azure et les services tiers.
             </p>
           </section>
 
           <section>
-            <h3 class="text-base md:text-lg font-bold text-[#060b24] mb-4">Démarche suivie</h3>
+            <h3 class="text-base md:text-lg font-bold text-[#060b24] mb-4">Méthodologie de Pilotage</h3>
             <div class="space-y-8">
               
               <div class="border-l-2 border-[#060b24]/20 pl-4">
-                <h4 class="font-bold text-gray-800 text-xs md:text-sm mb-2 uppercase tracking-wide">1. Analyse et Développement (C11, C12)</h4>
-                <p class="text-[11px] md:text-sm text-gray-600 mb-4">Mise en place de Google Analytics pour le suivi du trafic et création des points de terminaison API.</p>
+                <h4 class="font-bold text-gray-800 text-xs md:text-sm mb-2 uppercase tracking-wide">1. Organisation et Gestion de Projet</h4>
+                <p class="text-[11px] md:text-sm text-gray-600 mb-4">
+                  Mise en place d'une méthodologie <strong>Kanban</strong> via l'outil <strong>Trello</strong> pour assurer une visibilité totale sur l'avancement du projet. J'ai structuré le flux de travail en colonnes distinctes pour optimiser la productivité de l'équipe :
+                </p>
                 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-                  <div class="space-y-2">
-                    <span class="text-[9px] font-bold text-gray-400 uppercase">Structure API développée</span>
-                    <pre class="bg-zinc-900 text-zinc-100 p-3 rounded-xs text-[10px] overflow-x-auto shadow-inner custom-scrollbar"><code>GET /api/vi/data-interop
-Authorization: Bearer [TOKEN_AZURE]
-
-// Réponse JSON attendue
-{
-  "status": 200,
-  "data": {
-    "source": "azure-db",
-    "records": 142
-  }
-}</code></pre>
-                  </div>
-                  <div class="space-y-2">
-                    <span class="text-[9px] font-bold text-gray-400 uppercase">Snippet Google Analytics (GA4)</span>
-                    <pre class="bg-zinc-900 text-zinc-100 p-3 rounded-xs text-[10px] overflow-x-auto shadow-inner custom-scrollbar"><code>&lt;script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"&gt;&lt;/script&gt;
-&lt;script&gt;
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);} 
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX'); 
-&lt;/script&gt;</code></pre>
-                  </div>
+                <div class="grid grid-cols-3 gap-2 mb-6 text-center">
+                    <div class="p-2 bg-gray-100 border border-gray-200 rounded text-[10px] font-bold uppercase text-gray-500">À Faire (Backlog)</div>
+                    <div class="p-2 bg-blue-100 border border-blue-200 rounded text-[10px] font-bold uppercase text-blue-600">En Cours (Sprint)</div>
+                    <div class="p-2 bg-green-100 border border-green-200 rounded text-[10px] font-bold uppercase text-green-600">Terminé (Done)</div>
                 </div>
-              </div>
 
-              <div class="border-l-2 border-[#060b24]/20 pl-4">
-                <h4 class="font-bold text-gray-800 text-xs md:text-sm mb-2 uppercase tracking-wide">2. Organisation et Gestion de Projet (C12)</h4>
-                <p class="text-[11px] md:text-sm text-gray-600 mb-4">Utilisation de Trello pour la répartition des tâches et le suivi du backlog, sprint et tâches terminées.</p>
-                
                 <div class="bg-transparent rounded-xs aspect-[21/9] flex flex-col items-center justify-center p-6 text-center">
                   <i class="ph ph-trello-logo text-4xl text-gray-400 mb-2"></i>
                   <img src="../../assets/trello_capture.png" alt="Capture d'écran de Trello">
@@ -94,27 +70,24 @@ Authorization: Bearer [TOKEN_AZURE]
               </div>
 
               <div class="border-l-2 border-[#060b24]/20 pl-4">
-                <h4 class="font-bold text-gray-800 text-xs md:text-sm mb-2 uppercase tracking-wide">3. Déploiement et Infrastructure (C17)</h4>
-                <p class="text-[11px] md:text-sm text-gray-600 mb-3">Configuration de l'hébergement Azure et attribution du nom de domaine officiel pour garantir une accessibilité robuste.</p>
+                <h4 class="font-bold text-gray-800 text-xs md:text-sm mb-2 uppercase tracking-wide">2. Supervision du Déploiement et Cloud</h4>
+                <p class="text-[11px] md:text-sm text-gray-600 mb-3">
+                  Élaboration de la stratégie de mise en production sur <strong>Microsoft Azure</strong>. Ma mission a consisté à valider la configuration de l'hébergement et la gestion du nom de domaine officiel pour assurer une haute disponibilité du service.
+                </p>
               </div>
 
               <div class="border-l-2 border-[#060b24]/20 pl-4">
-                <h4 class="font-bold text-gray-800 text-xs md:text-sm mb-2 uppercase tracking-wide">4. Migration et Tests (C5, C4)</h4>
-                <p class="text-[11px] md:text-sm text-gray-600 mb-4">Migration des données du serveur distant vers le serveur local et exécution des tests validant l'intégrité de la plateforme.</p>
-                
-                <div class="bg-zinc-900 rounded-xs overflow-hidden shadow-inner">
-                  <div class="bg-zinc-800 px-4 py-2 border-b border-zinc-700 flex justify-between items-center">
-                    <span class="text-[9px] font-bold text-zinc-400 uppercase tracking-widest">Console Bash - Migration MySQL </span>
-                  </div>
-                  <pre class="text-zinc-100 p-4 text-[10px] md:text-xs custom-scrollbar"><code># Export depuis le serveur distant 
-mysqldump -h srv-distant.example.com -u admin -p --databases seyrin_db > backup_seyrin-db.sql
+                <h4 class="font-bold text-gray-800 text-xs md:text-sm mb-2 uppercase tracking-wide">3. Analyse de la Présence en Ligne</h4>
+                <p class="text-[11px] md:text-sm text-gray-600 mb-3">
+                  Pilotage de l'intégration de <strong>Google Analytics (GA4)</strong>. L'objectif était de définir les indicateurs clés de performance (KPI) pour mesurer l'audience et l'impact du projet après son déploiement.
+                </p>
+              </div>
 
-# Import sur le serveur local
-mysql -u root -p hackaton_local < backup_seyrin-db.sql
-
-# Vérification de l'intégrité (comptage utilisateurs) 
-mysql -u root -p -e "SELECT COUNT(*) FROM seyrin-db_local.users;" </code></pre>
-                </div>
+              <div class="border-l-2 border-[#060b24]/20 pl-4">
+                <h4 class="font-bold text-gray-800 text-xs md:text-sm mb-2 uppercase tracking-wide">4. Validation de l'Intégrité</h4>
+                <p class="text-[11px] md:text-sm text-gray-600 mb-4">
+                  Supervision des phases de tests d'interopérabilité. Validation finale de la migration des données pour garantir l'intégrité de la plateforme et la continuité de service lors du passage en environnement de production.
+                </p>
               </div>
             </div>
           </section>
@@ -124,7 +97,7 @@ mysql -u root -p -e "SELECT COUNT(*) FROM seyrin-db_local.users;" </code></pre>
               <i class="ph ph-lightbulb"></i> Conclusion
             </h3>
             <p class="text-blue-50 text-[11px] md:text-sm leading-relaxed italic">
-              Cette mission de Chef de Projet m'a permis de maîtriser l'ensemble de la chaîne de valeur d'un service numérique : de l'organisation au développement de la plateforme et à l'analyse de données, jusqu'au déploiement final sur une infrastructure cloud professionnelle.
+              Cette mission de Chef de Projet m'a permis de maîtriser l'intégralité de la chaîne de valeur d'un service numérique : de l'organisation agile à la prise de décision technique, jusqu'à l'analyse de performance sur une infrastructure Cloud professionnelle.
             </p>
           </section>
 
@@ -136,27 +109,18 @@ mysql -u root -p -e "SELECT COUNT(*) FROM seyrin-db_local.users;" </code></pre>
 
 <script setup>
 const skills = [
-  { code: 'C12', text: "Organisation du projet et attribution des tâches via Trello" },
-  { code: 'C12', text: "Développement d'API et amélioration des fonctionnalités du site" },
-  { code: 'C11', text: "Analyse de la présence en ligne avec Google Analytics" },
-  { code: 'C17', text: "Déploiement sur Azure et gestion du nom de domaine" },
-  { code: 'C4', text: "Tests d'intégralité du serveur et gestion des rôles GLPI" }
+  {  text: "Pilotage de projet et coordination des équipes via Trello" },
+  {  text: "Supervision du déploiement cloud sur Microsoft Azure" },
+  {  text: "Analyse stratégique de l'audience avec Google Analytics" },
+  {  text: "Contrôle qualité et validation de l'intégrité des systèmes" }
 ];
 
 const imprimerPage = () => {
   window.print();
 };
-
 </script>
 
 <style scoped>
-pre { 
-  font-family: 'Courier New', Courier, monospace; 
-  line-height: 1.5;
-  white-space: pre-wrap; 
-  word-break: break-all;
-}
-
 .custom-scrollbar::-webkit-scrollbar {
   height: 4px;
 }
