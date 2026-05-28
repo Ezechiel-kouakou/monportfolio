@@ -39,7 +39,6 @@
         
         <div class="lg:col-span-9 space-y-8">
 
-          <!-- SKELETON : Vidéo présentation -->
           <div v-if="loading" class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden animate-pulse">
             <div class="p-5 border-b border-gray-100 bg-gray-50/50 flex items-center gap-2">
               <div class="h-5 w-5 bg-gray-200 rounded"></div>
@@ -57,7 +56,6 @@
             </div>
           </div>
 
-          <!-- Vidéo présentation réelle -->
           <div v-else class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden">
             <div class="p-5 border-b border-gray-100 bg-gray-50/50 flex items-center gap-2">
               <i class="ph ph-identification-card text-[#060b24] text-xl"></i>
@@ -77,8 +75,36 @@
                     Conservation permanente
                   </span>
                 </div>
-                <div class="aspect-video bg-black rounded-xs overflow-hidden border border-gray-200 shadow-inner">
-                  <video :key="presentationVideo.nom_fichier" controls class="w-full h-full" crossorigin="anonymous">
+                <div class="aspect-video bg-black rounded-xs overflow-hidden border border-gray-200 shadow-inner relative group">
+                  
+                  <div v-if="videoStates[presentationVideo.id]?.isWaiting && !videoStates[presentationVideo.id]?.hasError" 
+                       class="absolute inset-0 bg-black/70 z-10 flex flex-col items-center justify-center text-center p-4 transition-all">
+                    <div class="w-8 h-8 border-2 border-blue-400 border-t-transparent rounded-full animate-spin mb-3"></div>
+                    <p class="text-xs text-white font-light tracking-wide animate-pulse">Merci de patienter, nous chargeons votre vidéo...</p>
+                  </div>
+
+                  <div v-if="videoStates[presentationVideo.id]?.hasError" 
+                       class="absolute inset-0 bg-[#0f111a] z-10 flex flex-col items-center justify-center text-center p-6 transition-all border border-red-900/30">
+                    <div class="w-12 h-12 bg-red-950/40 rounded-full flex items-center justify-center mb-3 border border-red-900/50">
+                      <i class="ph ph-warning text-xl text-red-400"></i>
+                    </div>
+                    <h5 class="text-white font-medium text-xs">Échec du téléchargement</h5>
+                    <p class="text-[10px] text-gray-400 mt-1 max-w-[250px] leading-relaxed">
+                      Impossible de charger le média. Le serveur de streaming est momentanément indisponible.
+                    </p>
+                    <button @click="retryVideo(presentationVideo)" class="mt-4 px-3 py-1 bg-gray-800 hover:bg-gray-700 text-gray-200 text-[10px] rounded-xs transition-all flex items-center gap-1">
+                      <i class="ph ph-arrows-clockwise"></i> Réessayer
+                    </button>
+                  </div>
+
+                  <video :key="presentationVideo.nom_fichier" 
+                         controls 
+                         class="w-full h-full" 
+                         crossorigin="anonymous"
+                         @waiting="handleVideoWaiting(presentationVideo.id)"
+                         @playing="handleVideoPlaying(presentationVideo.id)"
+                         @error="handleVideoError(presentationVideo.id)"
+                         @stalled="handleVideoWaiting(presentationVideo.id)">
                     <source :src="presentationVideo.nom_fichier" type="video/mp4">
                   </video>
                 </div>
@@ -106,7 +132,6 @@
             </div>
           </div>
 
-          <!-- SKELETON : Supports techniques -->
           <div v-if="loading" class="space-y-4">
             <div class="h-5 w-40 bg-gray-200 rounded animate-pulse"></div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -125,15 +150,43 @@
             </div>
           </div>
 
-          <!-- Supports techniques réels -->
           <div v-else class="space-y-4">
             <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
               <i class="ph ph-code text-[#060b24]"></i> Supports Techniques
             </h3>
             <div v-if="technicalVideos.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div v-for="video in technicalVideos" :key="video.id" class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden">
-                <div class="aspect-video bg-black">
-                  <video :key="video.nom_fichier" controls preload="metadata" class="w-full h-full" crossorigin="anonymous">
+                <div class="aspect-video bg-black relative group">
+                  
+                  <div v-if="videoStates[video.id]?.isWaiting && !videoStates[video.id]?.hasError" 
+                       class="absolute inset-0 bg-black/70 z-10 flex flex-col items-center justify-center text-center p-4 transition-all">
+                    <div class="w-8 h-8 border-2 border-blue-400 border-t-transparent rounded-full animate-spin mb-3"></div>
+                    <p class="text-xs text-white font-light tracking-wide animate-pulse">Merci de patienter, nous chargeons votre vidéo...</p>
+                  </div>
+
+                  <div v-if="videoStates[video.id]?.hasError" 
+                       class="absolute inset-0 bg-[#0f111a] z-10 flex flex-col items-center justify-center text-center p-6 transition-all border border-red-900/30">
+                    <div class="w-12 h-12 bg-red-950/40 rounded-full flex items-center justify-center mb-3 border border-red-900/50">
+                      <i class="ph ph-warning text-xl text-red-400"></i>
+                    </div>
+                    <h5 class="text-white font-medium text-xs">Échec du téléchargement</h5>
+                    <p class="text-[10px] text-gray-400 mt-1 max-w-[250px] leading-relaxed">
+                      Impossible de charger le média. Le serveur de streaming est momentanément indisponible.
+                    </p>
+                    <button @click="retryVideo(video)" class="mt-4 px-3 py-1 bg-gray-800 hover:bg-gray-700 text-gray-200 text-[10px] rounded-xs transition-all flex items-center gap-1">
+                      <i class="ph ph-arrows-clockwise"></i> Réessayer
+                    </button>
+                  </div>
+
+                  <video :key="video.nom_fichier" 
+                         controls 
+                         preload="metadata" 
+                         class="w-full h-full" 
+                         crossorigin="anonymous"
+                         @waiting="handleVideoWaiting(video.id)"
+                         @playing="handleVideoPlaying(video.id)"
+                         @error="handleVideoError(video.id)"
+                         @stalled="handleVideoWaiting(video.id)">
                     <source :src="video.nom_fichier" type="video/mp4">
                   </video>
                 </div>
@@ -189,7 +242,6 @@
             </div>
           </div>
 
-          <!-- Sidebar réelle -->
           <div v-else class="bg-white rounded-xs border border-gray-200 shadow-sm p-5 sticky top-8">
             <h4 class="text-[11px] font-black text-[#060b24] uppercase tracking-widest mb-4">Architecture</h4>
             <div class="space-y-4">
@@ -220,6 +272,13 @@ import { ref, onMounted, computed } from 'vue';
 const videos = ref([]);
 const loading = ref(true);
 
+// Objet réactif pour suivre l'état de chaque vidéo indépendamment
+const videoStates = ref({});
+
+// Stockage des timers pour éviter les fuites de mémoire
+const waitingTimers = {};
+const errorTimers = {};
+
 const fetchData = async () => {
   loading.value = true;
   try {
@@ -227,12 +286,71 @@ const fetchData = async () => {
     const data = await response.json();
     if (data.success) {
       videos.value = data.videos || [];
+      
+      // Initialisation par défaut de l'état réseau de chaque vidéo trouvée
+      videos.value.forEach(v => {
+        videoStates.value[v.id] = { isWaiting: false, hasError: false };
+      });
     }
   } catch (e) {
     // silencieux en production
   } finally {
     setTimeout(() => { loading.value = false; }, 1000);
   }
+};
+
+// 1. Déclenché dès que le navigateur attend des données du flux vidéo (buffering / lenteur tunnel)
+const handleVideoWaiting = (id) => {
+  clearTimeout(waitingTimers[id]);
+  clearTimeout(errorTimers[id]);
+
+  // Si au bout de 3 secondes la vidéo charge encore, on passe isWaiting à true
+  waitingTimers[id] = setTimeout(() => {
+    if (videoStates.value[id] && !videoStates.value[id].hasError) {
+      videoStates.value[id].isWaiting = true;
+    }
+  }, 3000);
+
+  // Si au bout de 10 secondes au total le flux n'a pas répondu, on lève l'erreur serveur indisponible
+  errorTimers[id] = setTimeout(() => {
+    if (videoStates.value[id]) {
+      videoStates.value[id].isWaiting = false;
+      videoStates.value[id].hasError = true;
+    }
+  }, 10000);
+};
+
+// 2. Déclenché dès que la lecture démarre ou reprend (le réseau répond parfaitement)
+const handleVideoPlaying = (id) => {
+  clearTimeout(waitingTimers[id]);
+  clearTimeout(errorTimers[id]);
+  if (videoStates.value[id]) {
+    videoStates.value[id].isWaiting = false;
+    videoStates.value[id].hasError = false;
+  }
+};
+
+// 3. Déclenché immédiatement en cas de rupture de flux stricte ou serveur local éteint (Erreur 502/404)
+const handleVideoError = (id) => {
+  clearTimeout(waitingTimers[id]);
+  clearTimeout(errorTimers[id]);
+  if (videoStates.value[id]) {
+    videoStates.value[id].isWaiting = false;
+    videoStates.value[id].hasError = true;
+  }
+};
+
+// Permet à l'utilisateur de forcer un rechargement propre de la balise vidéo
+const retryVideo = (video) => {
+  if (videoStates.value[video.id]) {
+    videoStates.value[video.id].hasError = false;
+    videoStates.value[video.id].isWaiting = true;
+  }
+  const secureBackupUrl = video.nom_fichier;
+  video.nom_fichier = '';
+  setTimeout(() => {
+    video.nom_fichier = secureBackupUrl;
+  }, 50);
 };
 
 const presentationVideo = computed(() => 
