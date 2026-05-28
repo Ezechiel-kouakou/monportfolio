@@ -100,7 +100,7 @@ onMounted(() => {
           </p>
 
           <div class="mt-6 md:mt-8 flex justify-center md:justify-start gap-6">
-            <a href="https://linkedin.com/in/ezechielk" target="_blank" class="text-zinc-400 dark:text-white/30 hover:text-blue-500 transition-all duration-300">
+            <a href="https://www.linkedin.com/in/ezechielk" target="_blank" class="text-zinc-400 dark:text-white/30 hover:text-blue-500 transition-all duration-300">
               <Linkedin :size="26" class="md:w-[30px] md:h-[30px]" stroke-width="1.5" />
             </a>
             <a href="https://github.com/Ezechiel-kouakou" target="_blank" class="text-zinc-400 dark:text-white/30 hover:text-zinc-900 dark:hover:text-white transition-all duration-300">
