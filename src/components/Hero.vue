@@ -44,10 +44,10 @@ onMounted(() => {
           </Transition>
         </div>
 
-        <div class="flex flex-col items-center">
-          <i class="ph ph-arrows-counter-clockwise text-white/100 text-5xl md:text-6xl animate-sync-spin inline-block"></i>
+        <div class="flex flex-col items-center h-15 w-20 bg-white rounded-xl overflow-hidden relative shadow-lg">
+          <i class="ph ph-arrows-clockwise text-black text-5xl md:text-6xl animate-sync-spin inline-block"></i>
           <p class="mt-10 text-white/20 text-[9px] tracking-[0.5em] uppercase font-light">
-             <!-- Donne moi une seconde -->
+             
           </p>
         </div>
 
@@ -95,7 +95,7 @@ onMounted(() => {
           <div class="h-1 w-16 md:w-20 bg-zinc-900 dark:bg-white mb-6 md:mb-8 mx-auto md:mx-0 transition-colors"></div>
 
           <p class="text-zinc-600 dark:text-white/80 text-base md:text-2xl capitalize tracking-[0.1em] md:tracking-[0.2em] font-light leading-relaxed transition-colors">
-            Étudiant en 1ère année de BTS SIO,<br />
+            Étudiant en 2è année de BTS SIO - Option SISR<br />
             <span class="font-bold text-zinc-900 dark:text-white">Développement Web & Réseau.</span>
           </p>
 

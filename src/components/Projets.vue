@@ -79,7 +79,7 @@ const topProjets = [
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div v-for="projet in topProjets" :key="projet.id"
-          class="flex flex-col h-full bg-white dark:bg-[#0c0c0c] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-xl dark:shadow-2xl transition-all duration-500 hover:-translate-y-3 group relative border border-zinc-200 dark:border-white/5">
+          class="flex flex-col h-full bg-white dark:bg-[#0c0c0c] rounded-[1rem] md:rounded-[1rem] overflow-hidden shadow-xs dark:shadow-2xl transition-all duration-500 hover:-translate-y-3 group relative border border-zinc-200 dark:border-white/5">
           
           <div class="h-48 md:h-52 bg-zinc-100 dark:bg-[#111] flex items-center justify-center relative transition-colors duration-500">
             <div class="p-5 md:p-6 bg-white dark:bg-black rounded-[1.5rem] md:rounded-[2rem] border border-zinc-200 dark:border-white/10 shadow-lg group-hover:scale-110 transition-transform duration-500">

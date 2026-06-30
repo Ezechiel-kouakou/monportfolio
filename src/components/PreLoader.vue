@@ -11,7 +11,8 @@
       </div>
 
       <div class="flex flex-col items-center">
-        <i class="ph ph-arrows-counter-clockwise text-blue-500 text-5xl md:text-6xl animate-sync-spin inline-block"></i>
+        <i class="ph ph-spinner-gap text-blue-500 text-5xl md:text-6xl animate-sync-spin inline-block"></i>
+        <i class="ph ph-spinner-gap"></i>
         <p class="mt-10 text-white/20 text-[9px] tracking-[0.5em] uppercase font-light">
           Initialisation du système
         </p>
@@ -19,7 +20,7 @@
 
       <div class="flex flex-col items-center gap-2 text-center">
         <h2 class="text-white/50 text-xs font-medium tracking-[0.3em] uppercase">
-          Ezechiel <span class="font-black text-white">Kouakou</span>
+          Ezechie <span class="font-black text-white">Kouakou</span>
         </h2>
         <div class="h-[1px] w-6 bg-blue-500/30"></div>
       </div>

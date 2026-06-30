@@ -3,22 +3,35 @@ import ExperienceCard from "./ExperienceCard.vue";
 import logoEfrei from "../assets/efrei_logo.png";
 import logoCarrefour from "../assets/logo_carrefour.png";
 import logoETech from "../assets/E.TECH.png";
+import logoGroupSSM from "../assets/logo_group_ssm.jpg";
 
 const experiences = [
-  {
+//  {
+//     role: "Stage technicien support informatique",
+//     company: "Group SSM",
+//     logo: logoGroupSSM,
+//     period: "Mai 2026 - Actuel",
+//     desc: "Support n1 et apport d'aide technique aux utilisateurs.",
+//     side: "right",
+//   },  
+   {
+    role: "Stage support informatique",
+    company: "Carrefour",
+    logo: logoCarrefour,
+    period: "Juin 2025 - Août 2025",
+   iconOutils: [
+      "https://img.icons8.com/fluency/48/microsoft-365.png",
+      "https://img.icons8.com/color/48/windows-10.png", 
+    ],
+    desc: "Support n1 et apport d'aide technique aux utilisateurs.",
+    side: "left",
+  },
+{
     role: "Projet académique - développement et réseau",
     company: "Efrei Paris",
     logo: logoEfrei,
     period: "Sept 2025 - Aujourd'hui",
     desc: "Projets académiques en développement et réseau.",
-    side: "left",
-  },
-  {
-    role: "Stage support informatique",
-    company: "Carrefour",
-    logo: logoCarrefour,
-    period: "Mai 2024 - Août 2024",
-    desc: "Support n1 et apport d'aide technique aux utilisateurs.",
     side: "right",
   },
   {
@@ -26,6 +39,12 @@ const experiences = [
     company: "E.TECH",
     logo: logoETech,
     period: "2024 - Aujourd'hui",
+    iconOutils:[
+      "https://img.icons8.com/color/48/tailwindcss.png", 
+      "https://img.icons8.com/color/48/vue-js.png", 
+      "https://img.icons8.com/color/48/nodejs.png",
+      "https://img.icons8.com/external-tal-revivo-shadow-tal-revivo/24/external-hypertext-preprocessor-a-widely-used-open-source-general-purpose-scripting-language-logo-shadow-tal-revivo.png"
+    ],
     desc: "Developpement de site vitrine, formulaire web et autres projets personnels.",
     side: "left",
   },

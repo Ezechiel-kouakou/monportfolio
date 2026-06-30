@@ -7,7 +7,7 @@ const sectionRef = ref(null);
 const stacks = [
   {
     name: "Linux",
-    icon: "https://cdn.simpleicons.org/linux/FCC624",
+    icon:  "https://img.icons8.com/external-those-icons-flat-those-icons/24/external-Linux-logos-and-brands-those-icons-flat-those-icons.png",
     dir: "from-left",
     delay: "delay-100",
   },
@@ -31,7 +31,7 @@ const stacks = [
   },
   {
     name: "Windows",
-    icon: "https://cdn.simpleicons.org/windows/0078D6",
+    icon: "https://img.icons8.com/color/48/windows-10.png",
     dir: "from-right",
     delay: "delay-900",
   },
