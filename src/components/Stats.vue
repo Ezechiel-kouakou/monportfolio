@@ -55,7 +55,7 @@ onMounted(() => {
   <section class="bg-white dark:bg-black w-full py-12 md:py-20 overflow-hidden transition-colors duration-500">
     <div class="max-w-7xl mx-auto px-6" ref="sectionRef">
       <div
-        class="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-5 p-8 md:p-12 bg-zinc-50 dark:bg-[#080808] border border-zinc-200 dark:border-white/5 rounded-[2rem] md:rounded-[3rem] shadow-xl dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden transition-all duration-500"
+        class="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-5 p-8 md:p-12 bg-zinc-50 dark:bg-[#080808] dark:border-white/5 rounded-lg md:rounded-xl shadow-xl dark:shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden transition-all duration-500"
       >
         <div
           v-for="stack in stacks"

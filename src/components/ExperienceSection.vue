@@ -16,19 +16,33 @@ function closeModal() {
   selectedExp.value = null;
 }
 const experiences = [
-//  {
-//     role: "Stage technicien support informatique",
-//     company: "Group SSM",
-//     logo: logoGroupSSM,
-//     period: "Mai 2026 - Actuel",
-//     desc: "Support n1 et apport d'aide technique aux utilisateurs.",
-//     side: "right",
-//   },  
+ {
+    role: "Stage technicien support informatique",
+    company: "Group SSM",
+    logo: logoGroupSSM,
+    period: "Mai 2026 - Actuel",
+    accentColor: "#004E9F",
+    iconOutils: [
+      "https://img.icons8.com/fluency/48/microsoft-365.png",
+      "https://img.icons8.com/color/48/windows-10.png",
+      "https://cdn.simpleicons.org/datto/00A4E4",
+      "https://img.icons8.com/fluency/48/anydesk.png",
+    ],
+    desc: "Support technique de niveau 1 et 2, administration de parc informatique",
+    details: [
+   "Diagnostic et résolution d'incidents matériels, logiciels et réseau (Niveau 1 et 2).",
+    "Supervision et gestion de parc en temps réel via la solution de RMM (Datto RMM).",
+    "Déploiement, configuration et sécurisation des postes de travail des collaborateurs.",
+    "Création et mise à jour de la documentation technique et des procédures de support.",
+    ],
+    side: "right",
+  },  
 {
   role: "Stage support informatique",
   company: "Carrefour",
   logo: logoCarrefour,
   period: "Juin 2025 - Août 2025",
+  accentColor: "#004E9F",
   iconOutils: [
     "https://img.icons8.com/fluency/48/microsoft-365.png",
     "https://img.icons8.com/color/48/windows-10.png",
@@ -42,25 +56,43 @@ const experiences = [
   side: "left",
 },
 {
-    role: "Projet académique - développement et réseau",
+    role: "Projet académique - Réseau & Administration Système",
     company: "Efrei Paris",
     logo: logoEfrei,
     period: "Sept 2025 - Aujourd'hui",
-    desc: "Projets académiques en développement et réseau.",
+    accentColor: "#004E9F",
+    iconOutils: [
+      "https://img.icons8.com/color/48/nmap.png",
+      "https://img.icons8.com/color/48/linux.png",  
+      "https://img.icons8.com/color/48/windows-10.png",
+      "https://img.icons8.com/ios/50/cisco-packet-tracer.png"
+],
+    desc: "Mise en place d'un réseau local et administration de serveurs Wind.",
+    details: [
+      "Mise en place d'un réseau local avec configuration de routeurs et switchs.",
+      "Administration de serveurs Linux et Windows pour la gestion des services réseau.",
+      "Analyse du trafic réseau et résolution de problèmes de connectivité.",
+
+    ],
     side: "right",
   },
   {
-    role: "Développeur autodidacte",
+    role: "Home Lab - Développement Web & Réseau",
     company: "E.TECH",
     logo: logoETech,
     period: "2024 - Aujourd'hui",
     iconOutils:[
-      "https://img.icons8.com/color/48/tailwindcss.png", 
-      "https://img.icons8.com/color/48/vue-js.png", 
+      "https://img.icons8.com/external-tal-revivo-shadow-tal-revivo/24/external-ubuntu-is-a-free-and-open-source-linux-distribution-logo-shadow-tal-revivo.png",
       "https://img.icons8.com/color/48/nodejs.png",
-      "https://img.icons8.com/external-tal-revivo-shadow-tal-revivo/24/external-hypertext-preprocessor-a-widely-used-open-source-general-purpose-scripting-language-logo-shadow-tal-revivo.png"
+      "https://img.icons8.com/external-tal-revivo-shadow-tal-revivo/24/external-hypertext-preprocessor-a-widely-used-open-source-general-purpose-scripting-language-logo-shadow-tal-revivo.png",
+      "https://img.icons8.com/fluency/48/azure-1.png"
     ],
     desc: "Developpement de site vitrine, formulaire web et autres projets personnels.",
+    details: [
+      "Création d'un site vitrine pour présenter mes projets et compétences.",
+      "Développement d'un formulaire web pour la collecte de données.",
+      "Mise en place d'un serveur web local pour tester et déployer les projets.",
+    ],
     side: "left",
   },
 ];

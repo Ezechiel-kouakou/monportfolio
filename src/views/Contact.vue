@@ -32,7 +32,7 @@
 
       <div class="flex flex-col">
         <h2 class="text-5xl md:text-6xl font-bold mb-4 text-black dark:text-white tracking-tighter transition-colors duration-500">
-          Parlons de votre projet.
+          Parlons de votre projet
         </h2>
         <p class="text-zinc-500 dark:text-zinc-400 mb-16 text-lg">
           Particulier ou entreprise, je suis à votre écoute pour vos besoins en développement et infrastructure.

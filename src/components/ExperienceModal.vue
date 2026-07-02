@@ -48,7 +48,7 @@
             <div class="relative z-10 -mt-10 md:-mt-12 flex-1 min-h-0 overflow-y-auto px-6 md:px-10 pb-8 md:pb-10">
               <div class="flex items-center gap-4 md:gap-6 mb-8">
                 <div
-                  class="w-16 h-16 md:w-20 md:h-20 bg-white rounded-xs flex items-center justify-center p-2  shadow-lg shrink-0"
+                  class="w-16 h-16 md:w-20 md:h-20 bg-transparent rounded-xs flex items-center justify-center p-2  shadow-lg shrink-0"
                   :style="{ borderColor: accent + '55' }"
                 >
                   <img :src="exp.logo" alt="logo" class="w-full h-full object-contain" />

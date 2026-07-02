@@ -6,14 +6,14 @@
           <div class="dots-spinner border-white dark:border-black"></div>
         </div>
 
-        <div class="content-box p-6 md:p-8 bg-black dark:bg-white rounded-xs shadow-2xl transition-colors duration-500 flex flex-col justify-between min-h-[220px]">
+        <div class="content-box p-6 md:p-8 bg-black dark:bg-white rounded-lg shadow-2xl transition-colors duration-500 flex flex-col justify-between min-h-[220px]">
           <div>
             <h2 class="text-xl md:text-xl font-black text-white dark:text-black uppercase leading-tight">
               {{ exp.role }}
             </h2>
 
             <div class="flex items-center gap-4 md:gap-6 mt-6 mb-6">
-              <div class="w-14 h-14 md:w-16 md:h-16 bg-white rounded-xl flex items-center justify-center p-2 border border-gray-200 shrink-0">
+              <div class="w-14 h-14 md:w-16 md:h-16 bg-transparent rounded-xl flex items-center justify-center p-2 border border-none shrink-0">
                 <img :src="exp.logo" alt="logo" class="w-full h-full object-contain" />
               </div>
               <div>

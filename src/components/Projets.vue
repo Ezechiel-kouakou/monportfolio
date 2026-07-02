@@ -72,7 +72,7 @@ const topProjets = [
         <h2 class="text-4xl md:text-5xl font-black uppercase tracking-tighter">
           Mes projets
         </h2>
-       <router-link to="/projets" class="text-sm md:text-base font-bold text-zinc-900 dark:text-white border border-zinc-200 dark:border-white/10 px-4 py-2 rounded-xl hover:bg-zinc-900 dark:hover:bg-white hover:text-white transition-all duration-300">
+       <router-link to="/projets" class="text-sm md:text-base font-bold text-zinc-900 dark:text-white border border-zinc-200 dark:border-white/10 px-4 py-2 rounded-lg hover:bg-zinc-900 dark:hover:bg-white hover:text-white transition-all duration-300">
           Voir tous les projets
         </router-link>
       </div>
