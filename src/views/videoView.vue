@@ -56,6 +56,7 @@
             </div>
           </div>
 
+          <!-- VIDÉO PRINCIPALE -->
           <div v-else class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden">
             <div class="p-5 border-b border-gray-100 bg-gray-50/50 flex items-center gap-2">
               <i class="ph ph-identification-card text-[#060b24] text-xl"></i>
@@ -114,6 +115,81 @@
                   <p class="text-[8px] text-gray-400 mt-3 lowercase tracking-wide">
                     <i class="ph ph-calendar-blank"></i> publiée le {{ new Date(presentationVideo.date_creation).toLocaleDateString('fr-FR') }}
                   </p>
+                  
+                  <!-- BTN COMMENTAIRES UNIQUE -->
+                  <div class="mt-4 pt-4 border-t border-gray-100">
+                    <button @click="toggleComments(presentationVideo.id)" class="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1.5 transition-colors">
+                      <i class="ph ph-chat-centered-text text-base"></i>
+                      {{ activeCommentVideoId === presentationVideo.id ? 'Masquer les retours' : 'Laisser un commentaire / retour d\'expérience' }}
+                    </button>
+                  </div>
+
+                  <!-- ZONE DE COMMENTAIRES DE LA VIDÉO PRINCIPALE -->
+                  <div v-if="activeCommentVideoId === presentationVideo.id" class="mt-4 bg-gray-50 p-4 rounded-xs border border-gray-200 space-y-4 animate-fade-in">
+                    <h4 class="text-xs font-bold text-gray-800">Espace Commentaires & Feedback</h4>
+                    
+                    <!-- Liste des commentaires existants -->
+                    <div v-if="comments[presentationVideo.id]?.length" class="space-y-4 max-h-[300px] overflow-y-auto pr-2">
+                      <div v-for="c in comments[presentationVideo.id]" :key="c.id" class="bg-white p-3 rounded border border-gray-100 shadow-xs space-y-2">
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">🎮 {{ c.pseudo }}</span>
+                          <span class="text-[9px] text-gray-400">{{ formatCommentDate(c.date_creation) }}</span>
+                        </div>
+                        <p class="text-xs text-gray-700 leading-relaxed">{{ c.contenu }}</p>
+                        
+                        <!-- Liste des réponses imbriquées -->
+                        <div v-if="c.replies && c.replies.length" class="pl-4 border-l-2 border-gray-200 mt-2 space-y-2">
+                          <div v-for="reply in c.replies" :key="reply.id" class="bg-gray-50 p-2 rounded text-[11px] space-y-1">
+                            <div class="flex items-center justify-between">
+                              <span class="font-bold text-gray-800">👑 {{ reply.pseudo }}</span>
+                              <span class="text-[8px] text-gray-400">{{ formatCommentDate(reply.date_creation) }}</span>
+                            </div>
+                            <p class="text-gray-600">{{ reply.contenu }}</p>
+                          </div>
+                        </div>
+
+                        <!-- Formulaire pour répondre -->
+                        <div class="pt-1">
+                          <button @click="setReplyTo(c.id)" class="text-[10px] text-gray-500 hover:text-blue-600 flex items-center gap-1 font-medium">
+                            <i class="ph ph-arrow-bend-down-right"></i> Répondre
+                          </button>
+                          
+                          <div v-if="replyingToId === c.id" class="mt-2 pl-4 space-y-2">
+                            <div class="flex flex-col sm:flex-row gap-2">
+                              <select v-model="newComment.pseudo" class="text-xs bg-white border border-gray-300 rounded px-2 py-1 flex-1">
+                                <option value="" disabled>Sélectionner un pseudonyme</option>
+                                <option v-for="p in kahootPseudos" :key="p" :value="p">{{ p }}</option>
+                              </select>
+                              <input v-model="newComment.customPseudo" type="text" placeholder="Ou tapez votre propre pseudo" class="text-xs border border-gray-300 rounded px-2 py-1 flex-1" />
+                            </div>
+                            <textarea v-model="newComment.contenu" placeholder="Votre réponse..." rows="2" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:outline-none"></textarea>
+                            <div class="flex justify-end gap-2">
+                              <button @click="cancelReply" class="px-2.5 py-1 text-[10px] bg-gray-200 text-gray-600 rounded">Annuler</button>
+                              <button @click="submitComment(presentationVideo.id, c.id)" class="px-3 py-1 text-[10px] bg-blue-600 text-white rounded font-bold">Répondre</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div v-else class="text-[11px] text-gray-400 italic text-center py-4">Aucun commentaire pour le moment. Soyez le premier ! 🚀</div>
+
+                    <!-- Formulaire principal (Commentaire de premier niveau) -->
+                    <div v-if="!replyingToId" class="border-t border-gray-200 pt-3 space-y-3">
+                      <div class="text-[11px] text-gray-500 font-medium">Laissez un retour ou faites une suggestion technique :</div>
+                      <div class="flex flex-col sm:flex-row gap-2">
+                        <select v-model="newComment.pseudo" class="text-xs bg-white border border-gray-300 rounded-xs p-2 flex-1">
+                          <option value="" disabled>🎮 Choisir un pseudo Fun (style Kahoot)</option>
+                          <option v-for="p in kahootPseudos" :key="p" :value="p">{{ p }}</option>
+                        </select>
+                        <input v-model="newComment.customPseudo" type="text" placeholder="Ou écrivez le vôtre" class="text-xs border border-gray-300 rounded-xs p-2 flex-1" />
+                      </div>
+                      <textarea v-model="newComment.contenu" placeholder="Ex: Excellente démonstration AD ! Des pistes d'améliorations sur la GPO ?" rows="3" class="w-full text-xs p-2.5 border border-gray-300 rounded-xs focus:ring-1 focus:ring-blue-500 focus:outline-none"></textarea>
+                      <button @click="submitComment(presentationVideo.id)" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xs hover:bg-blue-700 transition-colors w-full sm:w-auto">
+                        Envoyer le commentaire
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
               </div>
               
@@ -150,63 +226,121 @@
             </div>
           </div>
 
+          <!-- AUTRES VIDÉOS TECHNIQUES -->
           <div v-else class="space-y-4">
             <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
               <i class="ph ph-code text-[#060b24]"></i> Supports Techniques
             </h3>
             <div v-if="technicalVideos.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div v-for="video in technicalVideos" :key="video.id" class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden">
-                <div class="aspect-video bg-black relative group">
-                  
-                  <div v-if="videoStates[video.id]?.isWaiting && !videoStates[video.id]?.hasError" 
-                       class="absolute inset-0 bg-black/70 z-10 flex flex-col items-center justify-center text-center p-4 transition-all">
-                    <div class="w-8 h-8 border-2 border-blue-400 border-t-transparent rounded-full animate-spin mb-3"></div>
-                    <p class="text-xs text-white font-light tracking-wide animate-pulse">Merci de patienter, nous chargeons votre vidéo...</p>
-                  </div>
-
-                  <div v-if="videoStates[video.id]?.hasError" 
-                       class="absolute inset-0 bg-[#0f111a] z-10 flex flex-col items-center justify-center text-center p-6 transition-all border border-red-900/30">
-                    <div class="w-12 h-12 bg-red-950/40 rounded-full flex items-center justify-center mb-3 border border-red-900/50">
-                      <i class="ph ph-warning text-xl text-red-400"></i>
+              <div v-for="video in technicalVideos" :key="video.id" class="bg-white rounded-xs border border-gray-200 shadow-sm overflow-hidden flex flex-col justify-between">
+                <div>
+                  <div class="aspect-video bg-black relative group">
+                    
+                    <div v-if="videoStates[video.id]?.isWaiting && !videoStates[video.id]?.hasError" 
+                         class="absolute inset-0 bg-black/70 z-10 flex flex-col items-center justify-center text-center p-4 transition-all">
+                      <div class="w-8 h-8 border-2 border-blue-400 border-t-transparent rounded-full animate-spin mb-3"></div>
+                      <p class="text-xs text-white font-light tracking-wide animate-pulse">Merci de patienter, nous chargeons votre vidéo...</p>
                     </div>
-                    <h5 class="text-white font-medium text-xs">Échec du téléchargement</h5>
-                    <p class="text-[10px] text-gray-400 mt-1 max-w-[250px] leading-relaxed">
-                      Impossible de charger le média. Le serveur de streaming est momentanément indisponible.
-                    </p>
-                    <button @click="retryVideo(video)" class="mt-4 px-3 py-1 bg-gray-800 hover:bg-gray-700 text-gray-200 text-[10px] rounded-xs transition-all flex items-center gap-1">
-                      <i class="ph ph-arrows-clockwise"></i> Réessayer
-                    </button>
-                  </div>
 
-                  <video :key="video.nom_fichier" 
-                         controls 
-                         preload="metadata" 
-                         class="w-full h-full" 
-                         crossorigin="anonymous"
-                         @waiting="handleVideoWaiting(video.id)"
-                         @playing="handleVideoPlaying(video.id)"
-                         @error="handleVideoError(video.id)"
-                         @stalled="handleVideoWaiting(video.id)">
-                    <source :src="video.nom_fichier" type="video/mp4">
-                  </video>
-                </div>
-                <div class="p-4">
-                  <h4 class="font-bold text-gray-900 text-xs lowercase">{{ video.titre }}</h4>
-                  <p class="text-[10px] text-gray-500 mt-2 leading-relaxed italic">{{ video.description }}</p>
-                  <div class="mt-4 flex items-center justify-between border-t border-gray-50 pt-3">
-                    <p class="text-[9px] text-gray-400 uppercase tracking-wide">
-                      <i class="ph ph-calendar-blank"></i> {{ new Date(video.date_creation).toLocaleDateString('fr-FR') }}
-                    </p>
-                    <span v-if="video.mode_suppression === '15j'" 
-                          :class="video.jours_restants <= 3 ? 'text-red-800 font-light' : 'text-gray-500'" 
-                          class="text-[10px] flex items-center gap-1 uppercase tracking-tighter">
-                      <i class="ph-fill ph-clock-countdown"></i> J-{{ video.jours_restants }}
-                    </span>
-                    <span v-else class="text-[9px] text-green-600 font-medium uppercase tracking-tighter">
-                      <i class="ph-fill ph-infinity"></i> Permanent
-                    </span>
+                    <div v-if="videoStates[video.id]?.hasError" 
+                         class="absolute inset-0 bg-[#0f111a] z-10 flex flex-col items-center justify-center text-center p-6 transition-all border border-red-900/30">
+                      <div class="w-12 h-12 bg-red-950/40 rounded-full flex items-center justify-center mb-3 border border-red-900/50">
+                        <i class="ph ph-warning text-xl text-red-400"></i>
+                      </div>
+                      <h5 class="text-white font-medium text-xs">Échec du téléchargement</h5>
+                      <p class="text-[10px] text-gray-400 mt-1 max-w-[250px] leading-relaxed">
+                        Impossible de charger le média. Le serveur de streaming est momentanément indisponible.
+                      </p>
+                      <button @click="retryVideo(video)" class="mt-4 px-3 py-1 bg-gray-800 hover:bg-gray-700 text-gray-200 text-[10px] rounded-xs transition-all flex items-center gap-1">
+                        <i class="ph ph-arrows-clockwise"></i> Réessayer
+                      </button>
+                    </div>
+
+                    <video :key="video.nom_fichier" 
+                           controls 
+                           preload="metadata" 
+                           class="w-full h-full" 
+                           crossorigin="anonymous"
+                           @waiting="handleVideoWaiting(video.id)"
+                           @playing="handleVideoPlaying(video.id)"
+                           @error="handleVideoError(video.id)"
+                           @stalled="handleVideoWaiting(video.id)">
+                      <source :src="video.nom_fichier" type="video/mp4">
+                    </video>
+                  </div>
+                  <div class="p-4">
+                    <h4 class="font-bold text-gray-900 text-xs lowercase">{{ video.titre }}</h4>
+                    <p class="text-[10px] text-gray-500 mt-2 leading-relaxed italic">{{ video.description }}</p>
+                    <div class="mt-4 flex items-center justify-between border-t border-gray-50 pt-3">
+                      <p class="text-[9px] text-gray-400 uppercase tracking-wide">
+                        <i class="ph ph-calendar-blank"></i> {{ new Date(video.date_creation).toLocaleDateString('fr-FR') }}
+                      </p>
+                      <span v-if="video.mode_suppression === '15j'" 
+                            :class="video.jours_restants <= 3 ? 'text-red-800 font-light' : 'text-gray-500'" 
+                            class="text-[10px] flex items-center gap-1 uppercase tracking-tighter">
+                        <i class="ph-fill ph-clock-countdown"></i> J-{{ video.jours_restants }}
+                      </span>
+                      <span v-else class="text-[9px] text-green-600 font-medium uppercase tracking-tighter">
+                        <i class="ph-fill ph-infinity"></i> Permanent
+                      </span>
+                    </div>
                   </div>
                 </div>
+
+                <!-- SECTION RETOURS DE CHAQUE VIDÉO TECHNIQUE -->
+                <div class="px-4 pb-4 border-t border-gray-50 pt-3">
+                  <button @click="toggleComments(video.id)" class="text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                    <i class="ph ph-chat-centered-text"></i> 
+                    {{ activeCommentVideoId === video.id ? 'Masquer' : 'Laisser un avis technique' }}
+                  </button>
+
+                  <div v-if="activeCommentVideoId === video.id" class="mt-3 bg-gray-50 p-3 rounded-xs border border-gray-100 space-y-3 animate-fade-in text-[11px]">
+                    <div v-if="comments[video.id]?.length" class="space-y-3 max-h-[180px] overflow-y-auto">
+                      <div v-for="c in comments[video.id]" :key="c.id" class="bg-white p-2 rounded border border-gray-100 space-y-1">
+                        <div class="flex items-center justify-between font-semibold">
+                          <span class="text-blue-600">🎮 {{ c.pseudo }}</span>
+                          <span class="text-[8px] text-gray-400">{{ formatCommentDate(c.date_creation) }}</span>
+                        </div>
+                        <p class="text-gray-700 leading-tight">{{ c.contenu }}</p>
+
+                        <!-- Réponses imbriquées -->
+                        <div v-if="c.replies && c.replies.length" class="pl-3 border-l border-gray-200 mt-1 space-y-1">
+                          <div v-for="reply in c.replies" :key="reply.id" class="bg-gray-50 p-1.5 rounded text-[10px]">
+                            <span class="font-bold text-gray-800">👑 {{ reply.pseudo }} : </span>
+                            <span class="text-gray-600">{{ reply.contenu }}</span>
+                          </div>
+                        </div>
+
+                        <!-- Mini Répondre -->
+                        <div>
+                          <button @click="setReplyTo(c.id)" class="text-[9px] text-gray-400 hover:text-blue-600">Répondre</button>
+                          <div v-if="replyingToId === c.id" class="mt-2 space-y-1.5">
+                            <input v-model="newComment.customPseudo" type="text" placeholder="Pseudo" class="w-full text-[10px] p-1 border rounded" />
+                            <textarea v-model="newComment.contenu" placeholder="Répondre..." rows="1" class="w-full text-[10px] p-1 border rounded"></textarea>
+                            <div class="flex justify-end gap-1">
+                              <button @click="cancelReply" class="px-1.5 py-0.5 text-[8px] bg-gray-200 rounded">X</button>
+                              <button @click="submitComment(video.id, c.id)" class="px-2 py-0.5 text-[8px] bg-blue-600 text-white rounded">Ok</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Nouveau commentaire principal -->
+                    <div v-if="!replyingToId" class="space-y-2 pt-2 border-t border-gray-200">
+                      <select v-model="newComment.pseudo" class="w-full text-[10px] bg-white border border-gray-300 rounded p-1">
+                        <option value="" disabled>🎮 Pseudo fun (Style Kahoot)</option>
+                        <option v-for="p in kahootPseudos" :key="p" :value="p">{{ p }}</option>
+                      </select>
+                      <input v-model="newComment.customPseudo" type="text" placeholder="Ou tapez votre pseudo" class="w-full text-[10px] border border-gray-300 rounded p-1" />
+                      <textarea v-model="newComment.contenu" placeholder="Votre avis (ex: GPO propre !)" rows="2" class="w-full text-[10px] p-1.5 border border-gray-300 rounded"></textarea>
+                      <button @click="submitComment(video.id)" class="w-full py-1.5 bg-blue-600 text-white text-[10px] font-bold rounded hover:bg-blue-700 transition-colors">
+                        Envoyer l'avis
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
             <div v-else class="p-12 border border-dashed border-gray-200 rounded-xs text-center opacity-40">
@@ -267,10 +401,103 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, reactive } from 'vue';
 
 const videos = ref([]);
 const loading = ref(true);
+
+// --- COMPOSANTE COMMENTAIRES ---
+const activeCommentVideoId = ref(null);
+const comments = ref({}); // { [videoId]: [comments] }
+const replyingToId = ref(null);
+
+const kahootPseudos = [
+  'TechExplorer', 'SysAdminPro', 'GigaOctet', 'PingPongExpert', 
+  'CloudWalker', 'ActiveDirecTeam', 'KernelPanic', 'CtrlAltDefeat', 
+  'BitCrusher', 'RecruteurCurieux', 'WifiWarrior', 'SubnetZero'
+];
+
+const newComment = reactive({
+  pseudo: '',
+  customPseudo: '',
+  contenu: ''
+});
+
+// URL de ton API PHP
+const API_COMMENTS_URL = 'https://www.ezechielkouakou.fr/api_comments.php';
+
+const toggleComments = async (videoId) => {
+  if (activeCommentVideoId.value === videoId) {
+    activeCommentVideoId.value = null;
+  } else {
+    activeCommentVideoId.value = videoId;
+    await fetchComments(videoId);
+  }
+};
+
+const fetchComments = async (videoId) => {
+  try {
+    const response = await fetch(`${API_COMMENTS_URL}?video_id=${videoId}`);
+    const data = await response.json();
+    if (data.success) {
+      comments.value[videoId] = data.comments;
+    }
+  } catch (e) {
+    console.error("Erreur chargement commentaires", e);
+  }
+};
+
+const setReplyTo = (commentId) => {
+  replyingToId.value = commentId;
+  newComment.pseudo = '';
+  newComment.customPseudo = '';
+  newComment.contenu = '';
+};
+
+const cancelReply = () => {
+  replyingToId.value = null;
+};
+
+const submitComment = async (videoId, parentId = null) => {
+  const selectedPseudo = newComment.customPseudo.trim() || newComment.pseudo;
+  
+  if (!selectedPseudo || !newComment.contenu.trim()) {
+    alert("Veuillez choisir un pseudo et écrire un message.");
+    return;
+  }
+
+  try {
+    const response = await fetch(API_COMMENTS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        video_id: videoId,
+        pseudo: selectedPseudo,
+        contenu: newComment.contenu,
+        parent_id: parentId
+      })
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      // Nettoyage du formulaire
+      newComment.contenu = '';
+      newComment.customPseudo = '';
+      newComment.pseudo = '';
+      replyingToId.value = null;
+      
+      // Recharger la liste des commentaires
+      await fetchComments(videoId);
+    }
+  } catch (e) {
+    console.error("Erreur envoi commentaire", e);
+  }
+};
+
+const formatCommentDate = (dateStr) => {
+  const options = { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' };
+  return new Date(dateStr).toLocaleDateString('fr-FR', options);
+};
 
 // Objet réactif pour suivre l'état de chaque vidéo indépendamment
 const videoStates = ref({});
@@ -299,19 +526,16 @@ const fetchData = async () => {
   }
 };
 
-// 1. Déclenché dès que le navigateur attend des données du flux vidéo (buffering / lenteur tunnel)
 const handleVideoWaiting = (id) => {
   clearTimeout(waitingTimers[id]);
   clearTimeout(errorTimers[id]);
 
-  // Si au bout de 3 secondes la vidéo charge encore, on passe isWaiting à true
   waitingTimers[id] = setTimeout(() => {
     if (videoStates.value[id] && !videoStates.value[id].hasError) {
       videoStates.value[id].isWaiting = true;
     }
   }, 3000);
 
-  // Si au bout de 10 secondes au total le flux n'a pas répondu, on lève l'erreur serveur indisponible
   errorTimers[id] = setTimeout(() => {
     if (videoStates.value[id]) {
       videoStates.value[id].isWaiting = false;
@@ -320,7 +544,6 @@ const handleVideoWaiting = (id) => {
   }, 10000);
 };
 
-// 2. Déclenché dès que la lecture démarre ou reprend (le réseau répond parfaitement)
 const handleVideoPlaying = (id) => {
   clearTimeout(waitingTimers[id]);
   clearTimeout(errorTimers[id]);
@@ -330,7 +553,6 @@ const handleVideoPlaying = (id) => {
   }
 };
 
-// 3. Déclenché immédiatement en cas de rupture de flux stricte ou serveur local éteint (Erreur 502/404)
 const handleVideoError = (id) => {
   clearTimeout(waitingTimers[id]);
   clearTimeout(errorTimers[id]);
@@ -340,7 +562,6 @@ const handleVideoError = (id) => {
   }
 };
 
-// Permet à l'utilisateur de forcer un rechargement propre de la balise vidéo
 const retryVideo = (video) => {
   if (videoStates.value[video.id]) {
     videoStates.value[video.id].hasError = false;
@@ -383,5 +604,14 @@ video {
 
 .animate-pulse {
   animation: pulse 1.5s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
