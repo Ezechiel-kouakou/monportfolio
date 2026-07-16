@@ -280,7 +280,7 @@
                             class="text-[10px] flex items-center gap-1 uppercase tracking-tighter">
                         <i class="ph-fill ph-clock-countdown"></i> J-{{ video.jours_restants }}
                       </span>
-                      <span v-else class="text-[9px] text-green-600 font-medium uppercase tracking-tighter">
+                      <span v-else class="text-[9px] text-green-600 font-medium capitalize tracking-tighter">
                         <i class="ph-fill ph-infinity"></i> Permanent
                       </span>
                     </div>
@@ -291,22 +291,22 @@
                 <div class="px-4 pb-4 border-t border-gray-50 pt-3">
                   <button @click="toggleComments(video.id)" class="text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
                     <i class="ph ph-chat-centered-text"></i> 
-                    {{ activeCommentVideoId === video.id ? 'Masquer' : 'Laisser un avis technique' }}
+                    {{ activeCommentVideoId === video.id ? 'Fermer' : 'Laisser un avis' }}
                   </button>
 
                   <div v-if="activeCommentVideoId === video.id" class="mt-3 bg-gray-50 p-3 rounded-xs border border-gray-100 space-y-3 animate-fade-in text-[11px]">
                     <div v-if="comments[video.id]?.length" class="space-y-3 max-h-[180px] overflow-y-auto">
                       <div v-for="c in comments[video.id]" :key="c.id" class="bg-white p-2 rounded border border-gray-100 space-y-1">
                         <div class="flex items-center justify-between font-semibold">
-                          <span class="text-blue-600">🎮 {{ c.pseudo }}</span>
-                          <span class="text-[8px] text-gray-400">{{ formatCommentDate(c.date_creation) }}</span>
+                          <span class="text-blue-600"><i class="ph ph-user"></i> {{ c.pseudo }}</span>
+                          <span class="text-[8px] text-gray-400"><i class="ph ph-calendar"></i>{{ formatCommentDate(c.date_creation) }}</span>
                         </div>
                         <p class="text-gray-700 leading-tight">{{ c.contenu }}</p>
 
                         <!-- Réponses imbriquées -->
                         <div v-if="c.replies && c.replies.length" class="pl-3 border-l border-gray-200 mt-1 space-y-1">
                           <div v-for="reply in c.replies" :key="reply.id" class="bg-gray-50 p-1.5 rounded text-[10px]">
-                            <span class="font-bold text-gray-800">👑 {{ reply.pseudo }} : </span>
+                            <span class="font-bold text-gray-800"><i class="ph ph-arrow-bend-double-up-left"></i> {{ reply.pseudo }} : </span>
                             <span class="text-gray-600">{{ reply.contenu }}</span>
                           </div>
                         </div>
@@ -329,8 +329,8 @@
                     <!-- Nouveau commentaire principal -->
                     <div v-if="!replyingToId" class="space-y-2 pt-2 border-t border-gray-200">
                       <select v-model="newComment.pseudo" class="w-full text-[10px] bg-white border border-gray-300 rounded p-1">
-                        <option value="" disabled>🎮 Pseudo fun (Style Kahoot)</option>
-                        <option v-for="p in kahootPseudos" :key="p" :value="p">{{ p }}</option>
+                        <option value="" disabled>Tu peux choisir un pseudo</option>
+                        <option v-for="p in pseudoFun" :key="p" :value="p">{{ p }}</option>
                       </select>
                       <input v-model="newComment.customPseudo" type="text" placeholder="Ou tapez votre pseudo" class="w-full text-[10px] border border-gray-300 rounded p-1" />
                       <textarea v-model="newComment.contenu" placeholder="Votre avis (ex: GPO propre !)" rows="2" class="w-full text-[10px] p-1.5 border border-gray-300 rounded"></textarea>
@@ -411,10 +411,10 @@ const activeCommentVideoId = ref(null);
 const comments = ref({}); // { [videoId]: [comments] }
 const replyingToId = ref(null);
 
-const kahootPseudos = [
+const pseudoFun = [
   'TechExplorer', 'SysAdminPro', 'GigaOctet', 'PingPongExpert', 
   'CloudWalker', 'ActiveDirecTeam', 'KernelPanic', 'CtrlAltDefeat', 
-  'BitCrusher', 'RecruteurCurieux', 'WifiWarrior', 'SubnetZero'
+  'BitCrusher', 'RecruteurCurieux', 'WifiWarrior', 'SubnetZero','ZeroTrust', '403 Forbidden', '404NotFound', '500InternalError', 'BlueScreen', 'PacketSniffer',
 ];
 
 const newComment = reactive({
@@ -520,7 +520,7 @@ const fetchData = async () => {
       });
     }
   } catch (e) {
-    // silencieux en production
+ 
   } finally {
     setTimeout(() => { loading.value = false; }, 1000);
   }
