@@ -422,8 +422,8 @@ const replyCustomPseudo = ref('');
 const replyContenu = ref('');
 
 const pseudoFun = [
-  'TechExplorer', 'SysAdminPro', 'GigaOctet', 'PingPongExpert', 
-  'CloudWalker', 'ActiveDirecTeam', 'KernelPanic', 'CtrlAltDefeat', 
+  'TechExplorer', 'SysAdminPro', 'GigaOctet', 'PingPongExpert',
+  'CloudWalker', 'ActiveDirecTeam', 'KernelPanic', 'CtrlAltDefeat',
   'BitCrusher', 'RecruteurCurieux', 'WifiWarrior', 'SubnetZero','ZeroTrust', '403 Forbidden', '404NotFound', '500InternalError', 'BlueScreen', 'PacketSniffer',
 ];
 
@@ -437,6 +437,7 @@ const newComment = reactive({
 const API_COMMENTS_URL = 'https://www.ezechielkouakou.fr/api_comments.php';
 
 const toggleComments = async (videoId) => {
+  console.log('[DEBUG] toggleComments appelé pour videoId =', videoId);
   if (activeCommentVideoId.value === videoId) {
     activeCommentVideoId.value = null;
   } else {
@@ -446,18 +447,36 @@ const toggleComments = async (videoId) => {
 };
 
 const fetchComments = async (videoId) => {
+  console.log('[DEBUG] fetchComments -> GET', `${API_COMMENTS_URL}?video_id=${videoId}`);
   try {
     const response = await fetch(`${API_COMMENTS_URL}?video_id=${videoId}`);
-    const data = await response.json();
+    console.log('[DEBUG] fetchComments status HTTP =', response.status, response.statusText);
+
+    const rawText = await response.text();
+    console.log('[DEBUG] fetchComments réponse brute =', rawText);
+
+    let data;
+    try {
+      data = JSON.parse(rawText);
+    } catch (parseErr) {
+      console.error('[DEBUG] fetchComments: réponse non-JSON, le serveur a probablement renvoyé une erreur PHP (voir texte brut ci-dessus)', parseErr);
+      return;
+    }
+
+    console.log('[DEBUG] fetchComments data parsée =', data);
+
     if (data.success) {
       comments.value[videoId] = data.comments;
+    } else {
+      console.warn('[DEBUG] fetchComments: success = false, message serveur =', data.error || data.message || '(aucun message)');
     }
   } catch (e) {
-    console.error("Erreur chargement commentaires", e);
+    console.error('[DEBUG] fetchComments: erreur réseau/CORS probable ->', e);
   }
 };
 
 const setReplyTo = (commentId) => {
+  console.log('[DEBUG] setReplyTo commentId =', commentId);
   replyingToId.value = commentId;
   replyPseudo.value = '';
   replyCustomPseudo.value = '';
@@ -469,32 +488,59 @@ const cancelReply = () => {
 };
 
 const submitComment = async (videoId, parentId = null) => {
+  console.log('[DEBUG] === submitComment déclenché ===');
+  console.log('[DEBUG] videoId =', videoId, '| parentId =', parentId);
+
   // Sélection des données selon s'il s'agit d'un commentaire racine ou d'une réponse
-  const selectedPseudo = parentId 
+  const selectedPseudo = parentId
     ? (replyCustomPseudo.value.trim() || replyPseudo.value)
     : (newComment.customPseudo.trim() || newComment.pseudo);
-    
+
   const textContenu = parentId ? replyContenu.value.trim() : newComment.contenu.trim();
-  
+
+  console.log('[DEBUG] selectedPseudo =', JSON.stringify(selectedPseudo));
+  console.log('[DEBUG] textContenu =', JSON.stringify(textContenu));
+
   if (!selectedPseudo || !textContenu) {
+    console.warn('[DEBUG] Validation échouée : pseudo ou contenu manquant. Arrêt ici (alert affiché).');
     alert("Veuillez choisir un pseudo et écrire un message.");
     return;
   }
+
+  const payload = {
+    video_id: videoId,
+    pseudo: selectedPseudo,
+    contenu: textContenu,
+    parent_id: parentId
+  };
+  console.log('[DEBUG] Payload envoyé au serveur =', payload);
 
   try {
     const response = await fetch(API_COMMENTS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        video_id: videoId,
-        pseudo: selectedPseudo,
-        contenu: textContenu,
-        parent_id: parentId
-      })
+      body: JSON.stringify(payload)
     });
-    
-    const data = await response.json();
+
+    console.log('[DEBUG] submitComment status HTTP =', response.status, response.statusText);
+    console.log('[DEBUG] submitComment headers =', [...response.headers.entries()]);
+
+    const rawText = await response.text();
+    console.log('[DEBUG] submitComment réponse brute (texte) =', rawText);
+
+    let data;
+    try {
+      data = JSON.parse(rawText);
+    } catch (parseErr) {
+      console.error('[DEBUG] submitComment: la réponse n\'est PAS du JSON valide. Le PHP renvoie probablement une erreur/warning avant le JSON (regarde le texte brut ci-dessus).', parseErr);
+      alert("Erreur serveur : réponse invalide (voir console F12 pour le détail).");
+      return;
+    }
+
+    console.log('[DEBUG] submitComment data parsée =', data);
+
     if (data.success) {
+      console.log('[DEBUG] Commentaire envoyé avec succès, rechargement de la liste...');
       if (parentId) {
         replyContenu.value = '';
         replyCustomPseudo.value = '';
@@ -505,12 +551,16 @@ const submitComment = async (videoId, parentId = null) => {
         newComment.customPseudo = '';
         newComment.pseudo = '';
       }
-      
+
       // Recharger la liste des commentaires
       await fetchComments(videoId);
+    } else {
+      console.warn('[DEBUG] Le serveur a répondu success = false. Détail =', data.error || data.message || '(aucun détail fourni par le PHP)');
+      alert("Le serveur a refusé l'envoi : " + (data.error || data.message || 'raison inconnue'));
     }
   } catch (e) {
-    console.error("Erreur envoi commentaire", e);
+    console.error('[DEBUG] submitComment: erreur réseau/CORS/fetch ->', e);
+    alert("Erreur réseau lors de l'envoi (CORS ou serveur injoignable). Détail : " + e.message);
   }
 };
 
@@ -527,20 +577,36 @@ const waitingTimers = {};
 const errorTimers = {};
 
 const fetchData = async () => {
+  console.log('[DEBUG] fetchData -> GET https://www.ezechielkouakou.fr/api_proxy.php');
   loading.value = true;
   try {
     const response = await fetch('https://www.ezechielkouakou.fr/api_proxy.php');
-    const data = await response.json();
+    console.log('[DEBUG] fetchData status HTTP =', response.status, response.statusText);
+
+    const rawText = await response.text();
+    console.log('[DEBUG] fetchData réponse brute =', rawText);
+
+    let data;
+    try {
+      data = JSON.parse(rawText);
+    } catch (parseErr) {
+      console.error('[DEBUG] fetchData: réponse non-JSON ->', parseErr);
+      return;
+    }
+
     if (data.success) {
       videos.value = data.videos || [];
-      
+      console.log('[DEBUG] Vidéos chargées =', videos.value);
+
       // Initialisation par défaut de l'état réseau de chaque vidéo trouvée
       videos.value.forEach(v => {
         videoStates.value[v.id] = { isWaiting: false, hasError: false };
       });
+    } else {
+      console.warn('[DEBUG] fetchData: success = false ->', data.error || data.message);
     }
   } catch (e) {
-     console.error("Erreur chargement proxy vidéos", e);
+     console.error("[DEBUG] Erreur chargement proxy vidéos", e);
   } finally {
     setTimeout(() => { loading.value = false; }, 1000);
   }
@@ -594,11 +660,11 @@ const retryVideo = (video) => {
   }, 50);
 };
 
-const presentationVideo = computed(() => 
+const presentationVideo = computed(() =>
   videos.value.find(v => v.type_video === 'presentation')
 );
 
-const technicalVideos = computed(() => 
+const technicalVideos = computed(() =>
   videos.value.filter(v => v.type_video === 'technique')
 );
 
