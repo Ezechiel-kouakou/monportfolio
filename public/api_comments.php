@@ -16,12 +16,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // =========================================================================
 function loadEnv($path) {
     if (!file_exists($path)) {
+        error_log("[DEBUG ENV] Fichier introuvable : $path");
+        return false;
+    }
+    if (!is_readable($path)) {
+        error_log("[DEBUG ENV] Fichier trouvé mais NON LISIBLE (permissions) : $path");
         return false;
     }
 
     $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) {
+        $line = trim($line);
+        if ($line === '' || strpos($line, '#') === 0) {
+            continue;
+        }
+        if (strpos($line, '=') === false) {
+            error_log("[DEBUG ENV] Ligne ignorée (pas de '=') : $line");
             continue;
         }
 
@@ -40,7 +50,8 @@ function loadEnv($path) {
 }
 
 // MODIFICATION ICI : On remonte d'un niveau (/../) pour atteindre la racine absolue
-loadEnv(__DIR__ . '/../.env');
+$envPath = __DIR__ . '/../.env';
+$envLoaded = loadEnv($envPath);
 
 // =========================================================================
 // RÉCUPÉRATION DES VARIABLES VIA GETENV()
@@ -49,11 +60,24 @@ $supabaseUrl = getenv('SUPABASE_URL');
 $supabaseKey = getenv('SUPABASE_KEY');
 
 if (!$supabaseUrl || !$supabaseKey) {
+    // --- BLOC DE DEBUG TEMPORAIRE : à retirer une fois le problème résolu ---
     echo json_encode([
-        "success" => false, 
-        "error" => "Erreur de configuration : Impossible de lire les cles Supabase depuis le .env racine."
+        "success" => false,
+        "error" => "Erreur de configuration : Impossible de lire les cles Supabase depuis le .env racine.",
+        "debug" => [
+            "chemin_teste"        => $envPath,
+            "chemin_absolu_reel"  => realpath($envPath) ?: "INTROUVABLE (realpath a échoué)",
+            "fichier_existe"      => file_exists($envPath),
+            "fichier_lisible"     => is_readable($envPath),
+            "loadEnv_a_retourne"  => $envLoaded,
+            "__DIR__"             => __DIR__,
+            "supabase_url_trouve" => $supabaseUrl ? "OUI" : "NON",
+            "supabase_key_trouve" => $supabaseKey ? "OUI" : "NON",
+            "open_basedir"        => ini_get('open_basedir') ?: "(non restreint)",
+        ]
     ]);
     exit;
+    // --- FIN DU BLOC DE DEBUG ---
 }
 
 define('SUPABASE_URL', $supabaseUrl);
@@ -86,7 +110,7 @@ if ($method === 'GET') {
 
     if ($httpCode >= 200 && $httpCode < 300) {
         $allComments = json_decode($response, true);
-        
+
         $roots = [];
         $replies = [];
 
@@ -112,8 +136,10 @@ if ($method === 'GET') {
         ]);
     } else {
         echo json_encode([
-            "success" => false, 
-            "error" => "Erreur lors de la recuperation depuis Supabase."
+            "success" => false,
+            "error" => "Erreur lors de la recuperation depuis Supabase.",
+            "debug_http_code" => $httpCode,
+            "debug_response" => $response
         ]);
     }
     exit;
@@ -156,14 +182,16 @@ if ($method === 'POST') {
 
     if ($httpCode >= 200 && $httpCode < 300) {
         echo json_encode([
-            "success" => true, 
+            "success" => true,
             "message" => "Commentaire ajoute avec succes.",
             "data" => json_decode($response, true)
         ]);
     } else {
         echo json_encode([
-            "success" => false, 
-            "error" => "Echec de l'insertion dans Postgres Supabase."
+            "success" => false,
+            "error" => "Echec de l'insertion dans Postgres Supabase.",
+            "debug_http_code" => $httpCode,
+            "debug_response" => $response
         ]);
     }
     exit;
