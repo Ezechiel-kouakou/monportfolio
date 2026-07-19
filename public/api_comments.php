@@ -50,7 +50,7 @@ function loadEnv($path) {
 }
 
 // MODIFICATION ICI : On remonte d'un niveau (/../) pour atteindre la racine absolue
-$envPath = __DIR__ . '/../.env';
+$envPath = __DIR__ . '/.env';
 $envLoaded = loadEnv($envPath);
 
 // =========================================================================
