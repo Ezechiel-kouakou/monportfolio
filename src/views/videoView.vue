@@ -434,7 +434,7 @@ const newComment = reactive({
 });
 
 // URL de ton API PHP
-const API_COMMENTS_URL = 'https://www.ezechielkouakou.fr/api_comments.php';
+const API_COMMENTS_URL = 'https://penguin.tailc4a1d9.ts.net/api/post_comments.php';
 
 const toggleComments = async (videoId) => {
   if (activeCommentVideoId.value === videoId) {
@@ -541,7 +541,7 @@ const fetchData = async () => {
     }
   } catch (e) {
      console.error("Erreur chargement proxy vidéos", e);
-  } finaly {
+  } finally {
     setTimeout(() => { loading.value = false; }, 1000);
   }
 };
