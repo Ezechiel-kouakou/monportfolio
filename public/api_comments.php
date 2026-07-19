@@ -12,15 +12,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // =========================================================================
-// FONCTION POUR CHARGER LE FICHIER .ENV
+// FONCTION POUR CHARGER LE FICHIER .ENV (fallback dev local uniquement)
+// En production sur Azure, ce fichier n'est pas déployé : on compte sur
+// les Application Settings Azure lues directement via getenv().
 // =========================================================================
 function loadEnv($path) {
     if (!file_exists($path)) {
-        error_log("[DEBUG ENV] Fichier introuvable : $path");
+        error_log("[DEBUG ENV] Fichier .env introuvable : $path (normal en prod Azure)");
         return false;
     }
     if (!is_readable($path)) {
-        error_log("[DEBUG ENV] Fichier trouvé mais NON LISIBLE (permissions) : $path");
+        error_log("[DEBUG ENV] Fichier .env trouvé mais NON LISIBLE : $path");
         return false;
     }
 
@@ -31,7 +33,6 @@ function loadEnv($path) {
             continue;
         }
         if (strpos($line, '=') === false) {
-            error_log("[DEBUG ENV] Ligne ignorée (pas de '=') : $line");
             continue;
         }
 
@@ -49,26 +50,28 @@ function loadEnv($path) {
     return true;
 }
 
-// MODIFICATION ICI : On remonte d'un niveau (/../) pour atteindre la racine absolue
+// Chemin local (à côté du script) : sert uniquement en dev.
 $envPath = __DIR__ . '/.env';
 $envLoaded = loadEnv($envPath);
 
 // =========================================================================
-// RÉCUPÉRATION DES VARIABLES VIA GETENV()
+// RÉCUPÉRATION DES VARIABLES
+// Priorité : variables déjà présentes dans l'environnement (Azure Application
+// Settings), sinon celles chargées depuis le .env local si présent.
 // =========================================================================
 $supabaseUrl = getenv('SUPABASE_URL');
 $supabaseKey = getenv('SUPABASE_KEY');
 
 if (!$supabaseUrl || !$supabaseKey) {
-    // --- BLOC DE DEBUG TEMPORAIRE : à retirer une fois le problème résolu ---
+    // --- BLOC DE DEBUG TEMPORAIRE : à retirer une fois le problème confirmé résolu ---
     echo json_encode([
         "success" => false,
-        "error" => "Erreur de configuration : Impossible de lire les cles Supabase depuis le .env racine.",
+        "error" => "Erreur de configuration : Impossible de lire les cles Supabase.",
         "debug" => [
-            "chemin_teste"        => $envPath,
-            "chemin_absolu_reel"  => realpath($envPath) ?: "INTROUVABLE (realpath a échoué)",
-            "fichier_existe"      => file_exists($envPath),
-            "fichier_lisible"     => is_readable($envPath),
+            "source_attendue"     => "Azure Application Settings (getenv) ou fallback .env local",
+            "chemin_env_teste"    => $envPath,
+            "fichier_env_existe"  => file_exists($envPath),
+            "fichier_env_lisible" => is_readable($envPath),
             "loadEnv_a_retourne"  => $envLoaded,
             "__DIR__"             => __DIR__,
             "supabase_url_trouve" => $supabaseUrl ? "OUI" : "NON",
@@ -81,7 +84,7 @@ if (!$supabaseUrl || !$supabaseKey) {
 }
 
 define('SUPABASE_URL', $supabaseUrl);
-define('SUPABASE_KEY', $supabaseKey); 
+define('SUPABASE_KEY', $supabaseKey);
 
 $method = $_SERVER['REQUEST_METHOD'];
 
