@@ -156,13 +156,13 @@
                           
                           <div v-if="replyingToId === c.id" class="mt-2 pl-4 space-y-2">
                             <div class="flex flex-col sm:flex-row gap-2">
-                              <select v-model="newComment.pseudo" class="text-xs bg-white border border-gray-300 rounded px-2 py-1 flex-1">
+                              <select v-model="replyPseudo" class="text-xs bg-white border border-gray-300 rounded px-2 py-1 flex-1">
                                 <option value="" disabled>Sélectionner un pseudonyme</option>
-                                <option v-for="p in kahootPseudos" :key="p" :value="p">{{ p }}</option>
+                                <option v-for="p in pseudoFun" :key="p" :value="p">{{ p }}</option>
                               </select>
-                              <input v-model="newComment.customPseudo" type="text" placeholder="Ou tapez votre propre pseudo" class="text-xs border border-gray-300 rounded px-2 py-1 flex-1" />
+                              <input v-model="replyCustomPseudo" type="text" placeholder="Ou tapez votre propre pseudo" class="text-xs border border-gray-300 rounded px-2 py-1 flex-1" />
                             </div>
-                            <textarea v-model="newComment.contenu" placeholder="Votre réponse..." rows="2" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:outline-none"></textarea>
+                            <textarea v-model="replyContenu" placeholder="Votre réponse..." rows="2" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:outline-none"></textarea>
                             <div class="flex justify-end gap-2">
                               <button @click="cancelReply" class="px-2.5 py-1 text-[10px] bg-gray-200 text-gray-600 rounded">Annuler</button>
                               <button @click="submitComment(presentationVideo.id, c.id)" class="px-3 py-1 text-[10px] bg-blue-600 text-white rounded font-bold">Répondre</button>
@@ -179,7 +179,7 @@
                       <div class="flex flex-col sm:flex-row gap-2">
                         <select v-model="newComment.pseudo" class="text-xs bg-white border border-gray-300 rounded-xs p-2 flex-1">
                           <option value="" disabled>🎮 Choisir un pseudo Fun (style Kahoot)</option>
-                          <option v-for="p in kahootPseudos" :key="p" :value="p">{{ p }}</option>
+                          <option v-for="p in pseudoFun" :key="p" :value="p">{{ p }}</option>
                         </select>
                         <input v-model="newComment.customPseudo" type="text" placeholder="Ou écrivez le vôtre" class="text-xs border border-gray-300 rounded-xs p-2 flex-1" />
                       </div>
@@ -311,12 +311,17 @@
                           </div>
                         </div>
 
-                        <!-- Mini Répondre -->
                         <div>
                           <button @click="setReplyTo(c.id)" class="text-[9px] text-gray-400 hover:text-blue-600">Répondre</button>
                           <div v-if="replyingToId === c.id" class="mt-2 space-y-1.5">
-                            <input v-model="newComment.customPseudo" type="text" placeholder="Pseudo" class="w-full text-[10px] p-1 border rounded" />
-                            <textarea v-model="newComment.contenu" placeholder="Répondre..." rows="1" class="w-full text-[10px] p-1 border rounded"></textarea>
+                            <div class="flex flex-col gap-1.5">
+                              <select v-model="replyPseudo" class="w-full text-[10px] bg-white border border-gray-300 rounded p-1">
+                                <option value="" disabled>Choisir un pseudo</option>
+                                <option v-for="p in pseudoFun" :key="p" :value="p">{{ p }}</option>
+                              </select>
+                              <input v-model="replyCustomPseudo" type="text" placeholder="Ou tape ton pseudo" class="w-full text-[10px] p-1 border rounded" />
+                            </div>
+                            <textarea v-model="replyContenu" placeholder="Répondre..." rows="1" class="w-full text-[10px] p-1 border rounded"></textarea>
                             <div class="flex justify-end gap-1">
                               <button @click="cancelReply" class="px-1.5 py-0.5 text-[8px] bg-gray-200 rounded">X</button>
                               <button @click="submitComment(video.id, c.id)" class="px-2 py-0.5 text-[8px] bg-blue-600 text-white rounded">Ok</button>
@@ -411,6 +416,11 @@ const activeCommentVideoId = ref(null);
 const comments = ref({}); // { [videoId]: [comments] }
 const replyingToId = ref(null);
 
+// Variables isolées pour l'écriture d'une réponse imbriquée
+const replyPseudo = ref('');
+const replyCustomPseudo = ref('');
+const replyContenu = ref('');
+
 const pseudoFun = [
   'TechExplorer', 'SysAdminPro', 'GigaOctet', 'PingPongExpert', 
   'CloudWalker', 'ActiveDirecTeam', 'KernelPanic', 'CtrlAltDefeat', 
@@ -449,9 +459,9 @@ const fetchComments = async (videoId) => {
 
 const setReplyTo = (commentId) => {
   replyingToId.value = commentId;
-  newComment.pseudo = '';
-  newComment.customPseudo = '';
-  newComment.contenu = '';
+  replyPseudo.value = '';
+  replyCustomPseudo.value = '';
+  replyContenu.value = '';
 };
 
 const cancelReply = () => {
@@ -459,9 +469,14 @@ const cancelReply = () => {
 };
 
 const submitComment = async (videoId, parentId = null) => {
-  const selectedPseudo = newComment.customPseudo.trim() || newComment.pseudo;
+  // Sélection des données selon s'il s'agit d'un commentaire racine ou d'une réponse
+  const selectedPseudo = parentId 
+    ? (replyCustomPseudo.value.trim() || replyPseudo.value)
+    : (newComment.customPseudo.trim() || newComment.pseudo);
+    
+  const textContenu = parentId ? replyContenu.value.trim() : newComment.contenu.trim();
   
-  if (!selectedPseudo || !newComment.contenu.trim()) {
+  if (!selectedPseudo || !textContenu) {
     alert("Veuillez choisir un pseudo et écrire un message.");
     return;
   }
@@ -473,18 +488,23 @@ const submitComment = async (videoId, parentId = null) => {
       body: JSON.stringify({
         video_id: videoId,
         pseudo: selectedPseudo,
-        contenu: newComment.contenu,
+        contenu: textContenu,
         parent_id: parentId
       })
     });
     
     const data = await response.json();
     if (data.success) {
-      // Nettoyage du formulaire
-      newComment.contenu = '';
-      newComment.customPseudo = '';
-      newComment.pseudo = '';
-      replyingToId.value = null;
+      if (parentId) {
+        replyContenu.value = '';
+        replyCustomPseudo.value = '';
+        replyPseudo.value = '';
+        replyingToId.value = null;
+      } else {
+        newComment.contenu = '';
+        newComment.customPseudo = '';
+        newComment.pseudo = '';
+      }
       
       // Recharger la liste des commentaires
       await fetchComments(videoId);
@@ -520,8 +540,8 @@ const fetchData = async () => {
       });
     }
   } catch (e) {
- 
-  } finally {
+     console.error("Erreur chargement proxy vidéos", e);
+  } finaly {
     setTimeout(() => { loading.value = false; }, 1000);
   }
 };
@@ -589,29 +609,12 @@ onMounted(fetchData);
 @import url("https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css");
 @import url("https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css");
 
-.min-h-screen {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-
-video {
-  object-fit: contain;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.animate-pulse {
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeIn 0.2s ease-out forwards;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 </style>

@@ -1,5 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: https://www.ezechielkouakou.fr");
+header("Access-Control-Allow-Origin: https://www.ezechielkouakou.fr, http://localhost:5174/");
 
 $file = basename($_GET['file'] ?? '');
 if (empty($file)) die("Fichier manquant.");
