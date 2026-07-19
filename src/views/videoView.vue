@@ -433,8 +433,8 @@ const newComment = reactive({
   contenu: ''
 });
 
-// URL de ton API PHP
-const API_COMMENTS_URL = 'https://penguin.tailc4a1d9.ts.net/api/post_comments.php';
+// MODIFICATION ICI : On cible le fichier api_comments.php sur ton serveur Azure
+const API_COMMENTS_URL = 'https://www.ezechielkouakou.fr/api_comments.php';
 
 const toggleComments = async (videoId) => {
   if (activeCommentVideoId.value === videoId) {
@@ -519,12 +519,19 @@ const formatCommentDate = (dateStr) => {
   return new Date(dateStr).toLocaleDateString('fr-FR', options);
 };
 
-// Objet réactif pour suivre l'état de chaque vidéo indépendamment
+// --- LOGIQUE VIDÉO ET RÉSEAU ---
 const videoStates = ref({});
-
-// Stockage des timers pour éviter les fuites de mémoire
 const waitingTimers = {};
 const errorTimers = {};
+
+// Propriétés calculées pour séparer les vidéos selon leur catégorie
+const presentationVideo = computed(() => {
+  return videos.value.find(v => v.categorie === 'presentation') || null;
+});
+
+const technicalVideos = computed(() => {
+  return videos.value.filter(v => v.categorie === 'technique');
+});
 
 const fetchData = async () => {
   loading.value = true;
@@ -584,25 +591,20 @@ const handleVideoError = (id) => {
 
 const retryVideo = (video) => {
   if (videoStates.value[video.id]) {
-    videoStates.value[video.id].hasError = false;
     videoStates.value[video.id].isWaiting = true;
+    videoStates.value[video.id].hasError = false;
   }
-  const secureBackupUrl = video.nom_fichier;
-  video.nom_fichier = '';
-  setTimeout(() => {
-    video.nom_fichier = secureBackupUrl;
-  }, 50);
+  // Petit hack natif pour forcer le rechargement de la balise vidéo HTML5
+  const videoElement = document.querySelector(`video[src="${video.nom_fichier}"]`);
+  if (videoElement) {
+    videoElement.load();
+    videoElement.play().catch(() => {});
+  }
 };
 
-const presentationVideo = computed(() => 
-  videos.value.find(v => v.type_video === 'presentation')
-);
-
-const technicalVideos = computed(() => 
-  videos.value.filter(v => v.type_video === 'technique')
-);
-
-onMounted(fetchData);
+onMounted(() => {
+  fetchData();
+});
 </script>
 
 <style scoped>
