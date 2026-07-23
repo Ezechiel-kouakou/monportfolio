@@ -93,7 +93,7 @@ export default {
           id: 4,
           img: "/src/assets/projet-ecotechnologie.png",
           title: "ecotechnologie",
-          description: "Ecotechnologie , c'est bien plus qu'un simple web , c'est un ecosysteme ce projet s'inscrit dans le cadre de mon parcours académique  BTS SIO  , il vise a creer un application des vente en ligne ",
+          description: "Ecotechnologie, c'est bien plus qu'un simple site web, c'est un écosystème. Ce projet s'inscrit dans le cadre de mon parcours académique en BTS SIO. Il vise à créer une application de vente en ligne. ",
           technos: [
             { name: "Techno1", icon: "https://cdn.simpleicons.org/techno1/000000" },
             { name: "Techno2", icon: "https://cdn.simpleicons.org/techno2/000000" },
