@@ -7,8 +7,8 @@
           <div class="inline-flex items-center gap-2 px-3 py-4 bg-transparent text-[#060b24] rounded-xs border-blue-100 text-[15px] md:text-[11px] font-light capitalize tracking-wider">
             <i class="ph ph-stack text-[25px] text-blue-400"></i> Ezechiel Kouakou Media Hub
           </div>
-          <div class="w-16 h-1 bg-gradient-to-r from-[#060b24] to-transparent rounded-full"></div>
-          <p class="text-[11px] text-amber-800 text-center font-medium">
+          <div class="w-50 h-2 bg-gradient-to-r from-[#d2d9fc] to-transparent rounded-full"></div>
+          <p class="text-[12px] text-gray-800 text-center font-medium bg-gray-100/50 p-3 rounded-xl">
             <i class="ph ph-warning-circle"></i> 
             Note : Pour visionner les vidéos sur Google Chrome, veuillez autoriser l'accès au réseau privé ou utiliser Edge/Safari.
           </p>
@@ -28,7 +28,7 @@
         </div>
 
         <div class="flex-1 relative min-h-[300px] md:min-h-full">
-          <img src="../assets/image_host_self.jpg" alt="Illustration Mediatheque" class="absolute inset-0 w-full h-full object-cover object-center" />
+          <img src="../assets/mon-homelab.png" alt="Illustration Mediatheque" class="absolute inset-0 w-full h-full object-cover object-center" />
           <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent pointer-events-none md:hidden"></div>
         </div>
       </div>
@@ -381,7 +381,7 @@
             </div>
           </div>
 
-          <div v-else class="bg-white rounded-xs border border-gray-200 shadow-sm p-5 sticky top-8">
+          <div v-else class="bg-[#d2d9fc] rounded-xs border border-gray-200 shadow-sm p-5 sticky top-8">
             <h4 class="text-[11px] font-black text-[#060b24] uppercase tracking-widest mb-4">Architecture</h4>
             <div class="space-y-4">
               <div class="flex items-start gap-3">
@@ -577,7 +577,7 @@ const waitingTimers = {};
 const errorTimers = {};
 
 const fetchData = async () => {
-  console.log('[DEBUG] fetchData -> GET https://www.ezechielkouakou.fr/api_proxy.php');
+  // console.log('[DEBUG] fetchData -> GET https://www.ezechielkouakou.fr/api_proxy.php');
   loading.value = true;
   try {
     const response = await fetch('https://www.ezechielkouakou.fr/api_proxy.php');
