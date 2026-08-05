@@ -67,7 +67,7 @@
             />
           </span>
           <span v-if="!isScrolled" class="hidden md:block ml-2 font-display">
-            Médiathèque
+            Médiathèques
           </span>
         </router-link>
       </div>
@@ -82,17 +82,24 @@
 <script setup>
 import ThemeSwitcher from './ThemeSwitcher.vue'
 import { ref, computed, onMounted, onUnmounted } from "vue";
-import { Home, Briefcase, FolderCode, Mail, PlayCircle } from "lucide-vue-next";
+import { 
+  PhHouse, 
+  PhBriefcase, 
+  PhFolderOpen, 
+  PhEnvelopeSimple, 
+  PhPlayCircle 
+} from "@phosphor-icons/vue";
 
 const emit = defineEmits(["open-contact"]);
 const isScrolled = ref(false);
 const activeSection = ref("accueil");
 
 const links = [
-  { id: "accueil", label: "Accueil", icon: Home },
-  { id: "experiences", label: "Expériences", icon: Briefcase },
-  { id: "projets", label: "Projets", icon: FolderCode },
-  { id: "contact", label: "Contact", icon: Mail },
+  { id: "accueil", label: "Accueil", icon: PhHouse },
+  { id: "experiences", label: "Expériences", icon: PhBriefcase },
+  { id: "projets", label: "Projets", icon: PhFolderOpen },
+  { id: "contact", label: "Contact", icon: PhEnvelopeSimple },
+  { id: "videos", label: "Vidéos", icon: PhPlayCircle }
 ];
 
 const navStyle = computed(() => {

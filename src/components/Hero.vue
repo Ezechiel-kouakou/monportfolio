@@ -70,7 +70,7 @@ onMounted(() => {
           :class="isVisible ? 'translate-x-0 opacity-100' : 'md:-translate-x-24 -translate-y-12 opacity-0'"
         >
           <div class="relative group">
-            <div class="relative z-10 w-56 h-56 md:w-96 md:h-96 border-0 border-white overflow-hidden rounded-2xl shadow-2xl">
+            <div class="relative z-10 w-56 h-56 md:w-96 md:h-96 border-0 border-white overflow-hidden rounded-xl ">
               <img
                 :src="maPhoto"
                 alt="Ezechiel"
@@ -101,10 +101,12 @@ onMounted(() => {
 
           <div class="mt-6 md:mt-8 flex justify-center md:justify-start gap-6">
             <a href="https://www.linkedin.com/in/ezechielk" target="_blank" class="text-zinc-400 dark:text-white/30 hover:text-blue-500 transition-all duration-300">
-              <Linkedin :size="26" class="md:w-[30px] md:h-[30px]" stroke-width="1.5" />
+              <!-- <Linkedin :size="26" class="md:w-[30px] md:h-[30px]" stroke-width="1.5" /> -->
+              <i class="ph ph-linkedin-logo text-[36px]"></i>
             </a>
-            <a href="https://github.com/Ezechiel-kouakou" target="_blank" class="text-zinc-400 dark:text-white/30 hover:text-zinc-900 dark:hover:text-white transition-all duration-300">
-              <Github :size="26" class="md:w-[30px] md:h-[30px]" stroke-width="1.5" />
+            <a href="https://github.com/Ezechiel-kouakou" target="_blank" class="text-zinc-400 dark:text-white/30 hover:text-zinc-900 dark:hover:text-white transition-all duration-300" size="26">
+              <!-- <Github :size="26" class="md:w-[30px] md:h-[30px]" stroke-width="1.5" /> -->
+              <i class="ph ph-github-logo text-[36px]"></i>
             </a>
           </div>
 

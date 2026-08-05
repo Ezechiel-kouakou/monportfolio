@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@iconify/vue": "^5.0.0",
+    "@phosphor-icons/vue": "^2.2.1",
     "@tailwindcss/vite": "^4.1.18",
     "axios": "^1.15.2",
     "lucide-vue-next": "^0.563.0",
