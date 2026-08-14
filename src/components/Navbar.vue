@@ -49,27 +49,25 @@
           </span>
         </a>
 
-        <router-link
-          to="/videos"
-          :class="[
-            'cursor-pointer transition-all duration-300 flex items-center justify-center',
+      <router-link
+  to="/videos"
+  :class="['cursor-pointer transition-all duration-300 flex items-center justify-center',
             'text-black dark:text-white',
             isScrolled
               ? 'nav-icon-dock'
-              : 'nav-link-top font-light uppercase tracking-[0.1em] md:tracking-[0.2em] text-[10px] md:text-xs opacity-70 hover:opacity-100',
-          ]"
-        >
-          <span class="flex items-center justify-center">
-            <PlayCircle
-              :size="isScrolled ? 24 : 20"
-              class="md:w-[28px] md:h-[28px]"
-              :stroke-width="1.5"
-            />
-          </span>
-          <span v-if="!isScrolled" class="hidden md:block ml-2 font-display">
-            Médiathèques
-          </span>
-        </router-link>
+              : 'nav-link-top font-light uppercase tracking-[0.1em] md:tracking-[0.2em] text-[10px] md:text-xs opacity-70 hover:opacity-100',]"
+>
+  <span class="flex items-center justify-center">
+    <PhFilmSlate
+      :size="isScrolled ? 20 : 20"
+      class="md:w-[28px] md:h-[28px]"
+      :stroke-width="1"
+    />
+  </span>
+  <span v-if="!isScrolled" class="hidden md:block ml-2 font-display">
+    Médiathèques
+  </span>
+</router-link>
       </div>
 
       <div v-if="!isScrolled" class="absolute right-4 md:right-8">
@@ -87,7 +85,7 @@ import {
   PhBriefcase, 
   PhFolderOpen, 
   PhEnvelopeSimple, 
-  PhPlayCircle 
+  PhFilmSlate,
 } from "@phosphor-icons/vue";
 
 const emit = defineEmits(["open-contact"]);
@@ -99,7 +97,6 @@ const links = [
   { id: "experiences", label: "Expériences", icon: PhBriefcase },
   { id: "projets", label: "Projets", icon: PhFolderOpen },
   { id: "contact", label: "Contact", icon: PhEnvelopeSimple },
-  { id: "videos", label: "Vidéos", icon: PhPlayCircle }
 ];
 
 const navStyle = computed(() => {

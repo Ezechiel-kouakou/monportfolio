@@ -45,8 +45,11 @@
       <p>Pour tout renseignement, veuillez contacter l'administrateur du site à l'adresse suivante : contact@ezechielkouakou.fr</p>
       
       <div class="countdown">
-        <span>Retour estimé dans :</span>
-        <strong>{{days}}jrs {{ hours }}h {{ minutes }}m {{ seconds }}s</strong>
+        <span v-if="isOver">Retour imminent, merci de votre patience.</span>
+        <template v-else>
+          <span>Retour estimé dans :</span>
+          <strong>{{ days }}jrs {{ pad(hours) }}h {{ pad(minutes) }}m {{ pad(seconds) }}s</strong>
+        </template>
       </div>
     </div>
   </div>
@@ -57,47 +60,53 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 
-// 5 160 000 secondes = 1 440 heures = Exactement 60 jours
-const totalSeconds = ref(5160000) 
+// Date cible réelle et fixe : 01/09/2026 à 00:00, heure locale du serveur/visiteur.
+// C'est cette constante qu'il faut modifier pour changer la date de retour.
+const TARGET_DATE = new Date('2026-09-01T00:00:00')
 
-// Déclaration des états réactifs
-const days = ref(60) // Initialement 60 jours
+const days = ref(0)
 const hours = ref(0)
 const minutes = ref(0)
 const seconds = ref(0)
+const isOver = ref(false)
 
 let timer = null
 
+const pad = (n) => String(n).padStart(2, '0')
+
 const updateTimer = () => {
-  if (totalSeconds.value > 0) {
-    totalSeconds.value--
-    
-    // 1 jour = 86400 secondes (24 * 3600)
-    days.value = Math.floor(totalSeconds.value / 210000) // 25 jours complets
-    
-    // Heures restantes après déduction des jours complets
-    hours.value = Math.floor((totalSeconds.value % 210000) / 3600)
-    
-    // Minutes restantes après déduction des heures
-    minutes.value = Math.floor((totalSeconds.value % 3600) / 60)
-    
-    // Secondes restantes
-    seconds.value = totalSeconds.value % 60
-  } else {
-    clearInterval(timer) // Arrête le timer quand il atteint 0
+  // Recalcul à partir de l'heure réelle du visiteur à chaque tick,
+  // donc toujours exact peu importe quand la page est ouverte,
+  // combien de temps l'onglet reste ouvert, ou le fuseau horaire.
+  const now = new Date()
+  const diffMs = TARGET_DATE.getTime() - now.getTime()
+
+  if (diffMs <= 0) {
+    isOver.value = true
+    days.value = 0
+    hours.value = 0
+    minutes.value = 0
+    seconds.value = 0
+    clearInterval(timer)
+    return
   }
+
+  const diffSeconds = Math.floor(diffMs / 1000)
+
+  days.value = Math.floor(diffSeconds / 86400)
+  hours.value = Math.floor((diffSeconds % 86400) / 3600)
+  minutes.value = Math.floor((diffSeconds % 3600) / 60)
+  seconds.value = diffSeconds % 60
 }
 
 onMounted(() => {
-  // Optionnel : forcer un premier calcul immédiat au montage si la valeur initiale change
-  updateTimer() 
+  updateTimer()
   timer = setInterval(updateTimer, 1000)
 })
 
 onUnmounted(() => {
   clearInterval(timer)
 })
-
 </script>
 
 <style scoped>
@@ -165,25 +174,3 @@ p {
   100% { transform: rotate(360deg); }
 }
 </style>
-
-
-
-
-
-
-
-<!-- <style scoped>
-@import url("https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css");
-@import url("https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css");
-
-.animate-fade-in {
-  animation: fadeIn 0.2s ease-out forwards;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-</style> -->
-
-<!-- Site en maintenance code source -->

@@ -1,4 +1,4 @@
-<template>
+<template class="modale-container">
   <Transition name="slide-up">
     <div v-if="isOpen" class="fixed inset-0 z-[10000] flex items-end justify-center">
       <div @click="$emit('close')" class="absolute inset-0 bg-black/80 backdrop-blur-xl"></div>
@@ -52,15 +52,15 @@
             
             <div class="flex flex-col gap-3 md:col-span-2">
               <label class="text-[10px] font-light uppercase tracking-[0.3em] text-zinc-400 dark:text-white/50 ml-2">Vous êtes ?</label>
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-2 gap-4 ">
                 <button type="button" @click="form.role = 'particulier'"
-                  :class="form.role === 'particulier' ? 'bg-black text-white dark:bg-white dark:text-black' : 'border border-zinc-200 dark:border-white/10 text-zinc-500'"
-                  class="py-3 rounded-xl text-xs uppercase tracking-widest transition-all">
+                  :class="form.role === 'particulier' ? 'bg-black text-white dark:bg-white dark:text-black' : ' border border-zinc-200 dark:border-white/10 text-zinc-500'"
+                  class="py-3 rounded-sm text-xs capitalize tracking-widest transition-all inset-shadow-2xs">
                   Particulier
                 </button>
                 <button type="button" @click="form.role = 'entreprise'"
                   :class="form.role === 'entreprise' ? 'bg-black text-white dark:bg-white dark:text-black' : 'border border-zinc-200 dark:border-white/10 text-zinc-500'"
-                  class="py-3 rounded-xl text-xs uppercase tracking-widest transition-all">
+                  class="py-3 rounded-sm text-xs capitalize tracking-widest transition-all inset-shadow-2xs">
                   Entreprise
                 </button>
               </div>
@@ -68,27 +68,27 @@
 
             <div v-if="form.role === 'entreprise'" class="flex flex-col gap-3 md:col-span-2">
               <label class="text-[10px] font-light uppercase tracking-[0.3em] text-zinc-400 dark:text-white/50 ml-2">Entreprise</label>
-              <input v-model="form.entreprise" type="text" required class="p-4 border border-zinc-200 dark:border-white/10 rounded-xl bg-transparent text-black dark:text-white outline-none focus:border-zinc-400 transition-colors" placeholder="Nom de l'entreprise" />
+              <input v-model="form.entreprise" type="text" required class="p-4  border-zinc-200 dark:border-white/10 rounded-sm bg-transparent text-black dark:text-white outline-none focus:border-zinc-400 transition-colors inset-shadow-sm" placeholder="Nom de votre entreprise" />
             </div>
 
             <div class="flex flex-col gap-3">
               <label class="text-[10px] font-light uppercase tracking-[0.3em] text-zinc-400 dark:text-white/50 ml-2">Nom</label>
-              <input v-model="form.lastname" type="text" required class="p-4 border border-zinc-200 dark:border-white/10 rounded-xl bg-transparent text-black dark:text-white outline-none focus:border-zinc-400 transition-colors" />
+              <input v-model="form.lastname" type="text" required class="p-4 border-zinc-200 dark:border-white/10 rounded-sm bg-transparent text-black dark:text-white outline-none focus:border-zinc-400 transition-colors inset-shadow-sm" />
             </div>
 
             <div class="flex flex-col gap-3">
               <label class="text-[10px] font-light uppercase tracking-[0.3em] text-zinc-400 dark:text-white/50 ml-2">Prénom</label>
-              <input v-model="form.firstname" type="text" required class="p-4 border border-zinc-200 dark:border-white/10 rounded-xl bg-transparent text-black dark:text-white outline-none focus:border-zinc-400 transition-colors" />
+              <input v-model="form.firstname" type="text" required class="p-4 border-zinc-200 dark:border-white/10 rounded-sm bg-transparent text-black dark:text-white outline-none focus:border-zinc-400 transition-colors inset-shadow-sm" />
             </div>
 
             <div class="flex flex-col gap-3 md:col-span-2">
               <label class="text-[10px] font-light uppercase tracking-[0.3em] text-zinc-400 dark:text-white/50 ml-2">Email</label>
-              <input v-model="form.email" type="email" required class="p-4 border border-zinc-200 dark:border-white/10 rounded-xl bg-transparent text-black dark:text-white outline-none focus:border-zinc-400 transition-colors" />
+              <input v-model="form.email" type="email" required class="p-4 border-zinc-200 dark:border-white/10 rounded-sm bg-transparent text-black dark:text-white outline-none focus:border-zinc-400 transition-colors inset-shadow-sm" />
             </div>
 
             <div class="flex flex-col gap-3 md:col-span-2">
               <label class="text-[10px] font-light uppercase tracking-[0.3em] text-zinc-400 dark:text-white/50 ml-2">Message</label>
-              <textarea v-model="form.message" rows="4" required class="p-4 border border-zinc-200 dark:border-white/10 rounded-xl bg-transparent text-black dark:text-white resize-none outline-none focus:border-zinc-400 transition-colors"></textarea>
+              <textarea v-model="form.message" rows="4" required class="p-4 border-zinc-200 dark:border-white/10 rounded-sm bg-transparent text-black dark:text-white resize-none outline-none focus:border-zinc-400 transition-colors inset-shadow-sm"></textarea>
             </div>
 
             <div class="md:col-span-2 pt-6">
@@ -188,4 +188,25 @@ const handleSubmit = async () => {
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 10px; }
 .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #27272a; }
+.modal-container,
+input,
+textarea,
+button,
+label,
+h2,
+h3,
+p {
+  font-family: Verdana, Geneva, Tahoma, sans-serif !important;
+}
+
+/* Garder les proportions et espacements pour un rendu propre */
+h2 {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+label {
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
 </style>
