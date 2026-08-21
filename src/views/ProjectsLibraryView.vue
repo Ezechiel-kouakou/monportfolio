@@ -1,5 +1,11 @@
 <template>
   <div class="min-h-screen bg-[#fafafc] pt-32 px-6">
+    <div class="note-info">
+      <i class="ph ph-info text-blue-500 text-lg mr-2"></i>
+      <p class="text-sm text-gray-600 mb-2">
+        Cette page est encore en cours de  developpement, certaines fonctionnnalité ou liens vers des dépôts github peuvent ne pas être encore disponibles. Je travaille activement à l'amélioration de cette bibliothèque pour vous offrir une expérience complète et enrichissante. 
+  </p>
+    </div>
     <div class="max-w-7xl mx-auto mb-12 md:mb-16 text-black dark:text-white transition-colors duration-500 flex flex-col md:flex-row items-center justify-between gap-6">
        <h1 class="text-4xl font-light text-black mb-12">
       Bibliothèque complète des projets
@@ -115,6 +121,19 @@ export default {
 </script>
 
 <style scoped>
-/* Ajoute du style si besoin ici */
+.note-info{
+  display: flex;
+  align-items: center;
+  background-color: #f0f4ff;
+  border-left: 4px solid #3b82f6;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+.note-info i {
+  margin-right: 8px;
+  height: 20px;
+  width: 20px;
+}
 
 </style>

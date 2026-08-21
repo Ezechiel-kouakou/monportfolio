@@ -20,7 +20,6 @@
       
       <div class="lg:col-span-9 space-y-6">
         
-        <!-- SKELETON : Carte profil -->
         <div v-if="loading" class="bg-white rounded-xs border border-gray-200 overflow-hidden shadow-sm animate-pulse">
           <div class="h-20 bg-gray-200"></div>
           <div class="px-8 pb-6">
@@ -36,25 +35,25 @@
         </div>
 
         <!-- Carte profil réelle -->
-        <div v-else class="bg-white rounded-xs border border-gray-200 overflow-hidden shadow-sm">
-          <div class="h-20 bg-[#060b24]"></div>
+        <div v-else class="image-insert bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
+          <div class="h-20 bg-transparent"></div>
           <div class="px-8 pb-6">
             <div class="flex justify-between items-start -mt-10">
               <div class="bg-transparent p-1 rounded-x border-gray-200">
-                <div class="bg-transparent h-30 w-30 rounded-lg flex items-center justify-center border-gray-100">
+                <div class="bg-transparent h-30 w-30 rounded-xs flex items-center justify-center border-gray-100">
                   <img src="../assets/ezechiel_photo.png" alt="Photo de profil" class="h-full w-full object-cover rounded-x">
                 </div>
               </div>
               <div class="mt-12 flex justify-end">
-                <a :href="'https://' + profile.url" target="_blank" class="flex items-center gap-2 px-3 py-2 bg-white/50 text-black font-medium rounded-lg text-[11px] md:text-sm border border-transparent hover:bg-white transition-colors max-w-[180px] md:max-w-none">
+                <a :href="'https://' + profile.url" target="_blank" class="flex items-center gap-2 px-3 py-2 bg-white text-black font-medium rounded-xs text-[11px] md:text-sm border border-transparent hover:bg-white transition-colors max-w-[180px] md:max-w-none shadow-sm truncate">
                   <i class="ph ph-google-chrome-logo text-[#060b24] text-xl md:text-2xl"></i>
                   <span class="truncate">{{ profile.url }}</span>
                 </a>
               </div>
             </div>
             <div class="mt-4">
-              <h2 class="text-xl md:text-2xl font-bold text-gray-900 capitalize">{{ profile.nom }}</h2>
-              <div class="flex flex-wrap items-center gap-x-3 gap-y-3 mt-2 text-xs md:text-sm text-gray-600">
+              <h2 class="text-xl md:text-2xl font-bold text-white capitalize">{{ profile.nom }}</h2>
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-3 mt-2 text-xs md:text-sm text-gray-600 bg-transparent px-3 py-2 rounded-xs shadow-sm">
                 <span class="font-semibold text-gray-800 whitespace-nowrap">Candidat n°{{ profile.candidat }}</span>
                 <span class="hidden sm:inline text-gray-300">|</span>
                 <span class="whitespace-nowrap">Option <b class="text-[#060b24]">{{ profile.option }}</b></span>
@@ -301,7 +300,11 @@ onMounted(fetchData);
 .min-h-screen {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
-
+.image-insert {
+  background: 
+    linear-gradient(to right, white 0%, rgba(255, 255, 255, 0.926) 35%, rgba(255,255,255,0) 60%),
+    url(../assets/image-backg.jpg) no-repeat center center/cover;
+}
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }

@@ -45,4 +45,4 @@ onMounted(() => {
       class="text-black group-hover:text-black-600 transition-colors" 
     />
   </button>
-</template>
+</template> 
