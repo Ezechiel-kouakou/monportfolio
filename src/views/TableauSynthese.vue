@@ -52,7 +52,7 @@
               </div>
             </div>
             <div class="mt-4">
-              <h2 class="text-xl md:text-2xl font-bold text-white capitalize">{{ profile.nom }}</h2>
+              <h2 class="text-xl md:text-2xl font-bold text-black capitalize">{{ profile.nom }}</h2>
               <div class="flex flex-wrap items-center gap-x-3 gap-y-3 mt-2 text-xs md:text-sm text-gray-600 bg-transparent px-3 py-2 rounded-xs shadow-sm">
                 <span class="font-semibold text-gray-800 whitespace-nowrap">Candidat n°{{ profile.candidat }}</span>
                 <span class="hidden sm:inline text-gray-300">|</span>
