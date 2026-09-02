@@ -1,6 +1,11 @@
+<script setup>
+import Chatwidget from './components/Chatwidget.vue'
+</script>
+
 <template>
   <div class="min-h-screen bg-white dark:bg-black transition-colors duration-500">
     <router-view />
+    <Chatwidget />
   </div>
 </template>
 
