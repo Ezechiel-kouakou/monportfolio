@@ -99,9 +99,9 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue';
+import { ref, nextTick, watch, onBeforeUnmount } from 'vue';
 
-// AJUSTEMENT : même pattern que api_comments.php / api_proxy.php
+
 const API_CHATBOT_URL = 'https://www.ezechielkouakou.fr/api_chatbot.php';
 
 const isOpen = ref(false);
@@ -113,7 +113,7 @@ const messagesEl = ref(null);
 // Suggestions par défaut si le backend ne répond pas / au premier chargement
 const fallbackSuggestions = [
   'Quelles sont tes compétences techniques ?',
-  'Quels projets as-tu réalisés ?',
+  'Quelles expériences as-tu ?',
   'Comment te contacter ?',
   'Quelle est ta formation actuelle ?'
 ];
@@ -126,10 +126,67 @@ const messages = ref([
   }
 ]);
 
+const suspiciousPatterns = [
+  /<\s*script/i,                     
+  /<\/?[a-z][^>]{0,50}>/i,           
+  /\bunion\b[\s\S]{0,30}\bselect\b/i, 
+  /\bselect\b[\s\S]{0,30}\bfrom\b/i,  
+  /\bdrop\s+table\b/i,
+  /\binsert\s+into\b/i,
+  /\bdelete\s+from\b/i,
+  /<\?php/i,
+  /\$\{[\s\S]*\}/,                    
+  /javascript:/i,
+  /\bon[a-z]+\s*=\s*["']/i,           
+  /```/,                              
+  /function\s*\([^)]*\)\s*\{/,
+  /=>\s*\{/,
+  /;\s*(rm|curl|wget)\s/i,
+  /\.\.\/\.\.\//,                     
+];
+
+function looksLikeCode(text) {
+  return suspiciousPatterns.some((re) => re.test(text));
+}
+
 const openChat = () => {
   isOpen.value = true;
   hasUnreadHint.value = false;
 };
+
+let savedScrollY = 0;
+
+const lockBodyScroll = () => {
+  savedScrollY = window.scrollY;
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${savedScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+};
+
+const unlockBodyScroll = () => {
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, savedScrollY);
+};
+
+watch(isOpen, (open) => {
+  if (open) {
+    lockBodyScroll();
+  } else {
+    unlockBodyScroll();
+  }
+});
+
+onBeforeUnmount(() => {
+  if (isOpen.value) {
+    unlockBodyScroll();
+  }
+});
 
 const scrollToBottom = async () => {
   await nextTick();
@@ -142,6 +199,18 @@ const handleSubmit = () => {
   const text = draft.value.trim();
   if (!text) return;
   draft.value = '';
+
+  if (looksLikeCode(text)) {
+    messages.value.push({ role: 'user', text });
+    messages.value.push({
+      role: 'bot',
+      text: "Ce message ressemble à du code ou à une tentative d'injection, je ne peux pas le traiter. Merci de reformuler ta question en langage naturel 🙂",
+      suggestions: fallbackSuggestions
+    });
+    scrollToBottom();
+    return; 
+  }
+
   sendMessage(text);
 };
 
